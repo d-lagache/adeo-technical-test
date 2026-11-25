@@ -143,6 +143,7 @@ La base est considérée comme **déjà démarrée** quand on lance l'API (`dock
 - Prisma 7 : la configuration CLI (chemin du schéma, des migrations, `DATABASE_URL`) est dans `backend/prisma.config.ts`, et le client se connecte via le *driver adapter* `@prisma/adapter-pg` passé au constructeur de `PrismaClient` dans `PrismaService`.
 - L'ENUM `author_type` est géré nativement par Prisma (`enum AuthorType`).
 - Prisma ne sait pas déclarer les contraintes `CHECK` (`price >= 0`, `stock >= 0`, `notation BETWEEN 1 AND 5`). On les ajoute **à la main, en SQL**, dans la migration initiale.
+- Prisma génère des clés `SERIAL` pour `@default(autoincrement())`. Dans la migration initiale, on les remplace à la main par `INTEGER GENERATED ALWAYS AS IDENTITY` (forme standard SQL recommandée par PostgreSQL, qui interdit d'insérer un `id` à la main). Prisma traite ces deux formes de la même façon : `prisma migrate diff` ne détecte aucune dérive.
 
 ---
 

@@ -21,5 +21,5 @@ Créer les tables en base, avec les contraintes que Prisma ne sait pas exprimer.
 
 ## Fait quand
 
-- [ ] `\d products` et `\d reviews` dans psql montrent les 3 `CHECK`, les FK et les index.
-- [ ] Un `INSERT` avec `notation = 6` est rejeté.
+- [x] `\d products` et `\d reviews` dans psql montrent les 3 `CHECK`, les FK et les index.
+- [x] Un `INSERT` avec `notation = 6` est rejeté.
