@@ -60,13 +60,14 @@ flowchart LR
 | Tests API       | Vitest (`vitest`, `@vitest/coverage-v8`)        | 5.1              | Tests unitaires                                             |
 | Tests front     | Vitest + `@vue/test-utils`                      | 5.1 / 2.6        | Tests unitaires                                             |
 | Qualité API     | oxlint (`--type-aware`) / Prettier              | 1.95 / 3.10      | Lint et formatage du backend                                |
-| Qualité front   | ESLint + `typescript-eslint` / Prettier         | 10.15 / 8.74 / 3.10 | Lint et formatage du frontend                            |
+| Qualité front   | oxlint + ESLint (`typescript-eslint`, `eslint-plugin-vue`) / Prettier | 1.82 / 10.15 / 8.74 / 3.10 | Lint et formatage du frontend      |
 
 Versions stables relevées sur le registre npm à l'initialisation (novembre 2026), au format majeur.mineur. Les `package.json` déclarent des plages `^` sur ces versions ; les versions exactes sont figées par le `package-lock.json` de chaque application, versionné.
 
 - **Prisma 7.10 et non 8** : le tag `latest` de `prisma` pointe sur une *release candidate* (`8.0.0-rc`) ; on reste sur la dernière version stable, alignée avec `@prisma/client`.
 - **TypeScript 6.0 et non 7** : `@nestjs/cli` 12 embarque TypeScript `~6.0` et `typescript-eslint` (front) exige `< 6.1`.
 - **Backend en ESM, testé avec Vitest et linté avec oxlint** : ce sont les choix par défaut du CLI NestJS 12, dont les paquets sont désormais *ESM-only*. Jest ne gère l'ESM qu'en mode expérimental (`--experimental-vm-modules`) ; Vitest le gère nativement et c'est aussi le runner du front, donc un seul outil de test pour tout le dépôt. Conséquences : `"type": "module"`, imports relatifs suffixés par `.js`, `import.meta.dirname` au lieu de `__dirname`, mocks en `vi.fn()`.
+- **Front généré avec `create-vue`** (`--ts --vitest --eslint --prettier --bare`, sans router ni Pinia : un seul écran, l'état serveur est porté par Vue Query). Le template épingle Vitest 4 : il est monté en 5.1 pour avoir la même version que le backend, et Prettier en 3.10. Il lint en deux passes, oxlint puis ESLint (`eslint-plugin-oxlint` désactive dans ESLint les règles déjà couvertes par oxlint) ; ce choix par défaut est conservé. Le template déclare `engines.node` `^22.18.0 || >=24.12.0` : utiliser une version 24 récente (`nvm install 24`).
 - **Scaffold nettoyé** : le CLI ajoute `@nestjs/observe` (télémétrie vers un service SaaS externe) et `@nestjs/mau` (déploiement) ; ils sont retirés, hors périmètre d'un test local.
 
 ---
@@ -308,7 +309,7 @@ npm run dev              # http://localhost:5173
 
 ## 10. Qualité
 
-- **Lint et formatage** : Prettier dans les deux applications ; oxlint (avec règles typées) côté API, ESLint côté front.
+- **Lint et formatage** : Prettier dans les deux applications ; oxlint (avec règles typées) côté API ; oxlint puis ESLint côté front (`npm run lint`), plus la vérification de types des `.vue` par `vue-tsc` (`npm run type-check`).
 - **Tests API** :
   - unitaires (Vitest), sur les services, et en particulier sur les calculs d'agrégats ;
 - **Tests front** : Vitest, sur les composables et les composants clés.

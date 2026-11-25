@@ -34,6 +34,8 @@ npm run lint                         # oxlint --type-aware
 # frontend/
 cp .env.example .env                 # VITE_API_URL
 npm run dev                          # http://localhost:5173
+npm run lint                         # oxlint puis ESLint
+npm run type-check                   # vue-tsc
 npx vitest run path/to/file.spec.ts  # un seul test
 ```
 

@@ -22,5 +22,5 @@ Créer le squelette du dashboard dans `frontend/`.
 
 ## Fait quand
 
-- [ ] `npm run dev` sert une page vide sur `http://localhost:5173`.
-- [ ] `npm run lint`, `npm run type-check` et `npx vitest run` passent.
+- [x] `npm run dev` sert une page vide sur `http://localhost:5173`.
+- [x] `npm run lint`, `npm run type-check` et `npx vitest run` passent.
