@@ -13,7 +13,7 @@ Centraliser les appels à l'API et typer ses réponses.
 - `frontend/src/api/client.ts`
 - `frontend/src/api/types.ts`
 - `frontend/.env.example`
-- `frontend/src/env.d.ts`
+- `frontend/env.d.ts` (fichier existant du scaffold Vite, à la racine du front et déjà inclus par les `tsconfig`)
 
 ## Étapes
 
@@ -24,5 +24,5 @@ Centraliser les appels à l'API et typer ses réponses.
 
 ## Fait quand
 
-- [ ] `npx vitest run src/api` passe.
-- [ ] `npm run type-check` passe.
+- [x] `npx vitest run src/api` passe.
+- [x] `npm run type-check` passe.

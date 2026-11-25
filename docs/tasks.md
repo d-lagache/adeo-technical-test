@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 25 / 32**
+**Avancement : 26 / 32**
 
 ## Phase 0 — Socle du dépôt
 
@@ -50,7 +50,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T23 — Scaffolder l'application Vue 3](./tasks/T23-scaffold-vue.md) | T02 |
 | ✅ | [T24 — Intégrer PrimeVue](./tasks/T24-primevue.md) | T23 |
 | ✅ | [T25 — Intégrer TanStack Vue Query](./tasks/T25-vue-query.md) | T23 |
-| ⬜ | [T26 — Client HTTP et types](./tasks/T26-api-client.md) | T23 |
+| ✅ | [T26 — Client HTTP et types](./tasks/T26-api-client.md) | T23 |
 | ⬜ | [T27 — Bandeau KPI](./tasks/T27-kpi-bar.md) | T14, T24, T25, T26 |
 | ⬜ | [T28 — Section « Produits les plus appréciés »](./tasks/T28-most-appreciated-section.md) | T17, T24, T25, T26 |
 | ⬜ | [T29 — Section « Produits les moins bien notés »](./tasks/T29-lowest-rated-section.md) | T18, T28 |
