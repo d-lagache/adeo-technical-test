@@ -22,4 +22,4 @@ Les docs servent de support à l'entretien : elles doivent refléter le code ré
 
 ## Fait quand
 
-- [ ] Relecture : aucune contradiction entre docs et code.
+- [x] Relecture : aucune contradiction entre docs et code.

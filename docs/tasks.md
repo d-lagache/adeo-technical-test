@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 38 / 39**
+**Avancement : 39 / 39**
 
 ## Phase 0 — Socle du dépôt
 
@@ -73,4 +73,4 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
 | Statut | Tâche | Dépend de |
 |--------|-------|-----------|
-| ⬜ | [T33 — Mettre à jour la documentation de conception](./tasks/T33-docs-update.md) | T32 |
+| ✅ | [T33 — Mettre à jour la documentation de conception](./tasks/T33-docs-update.md) | T32 |

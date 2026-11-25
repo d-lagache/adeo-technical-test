@@ -86,8 +86,11 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
 │   └── products.json           # Jeu de données source
 ├── docs/
 │   ├── architecture.md         # Ce document
-│   └── database-schema.md      # Modèle relationnel
+│   ├── database-schema.md      # Modèle relationnel
+│   ├── tasks.md                # Suivi des tâches (une tâche = un commit)
+│   └── tasks/                  # Fiche détaillée de chaque tâche
 ├── backend/
+│   ├── README.md               # Démarrage, routes, exemples curl
 │   ├── package.json
 │   ├── .env.example
 │   ├── prisma.config.ts        # Configuration Prisma 7 (schéma, migrations, DATABASE_URL)
@@ -104,6 +107,7 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
 │   │   ├── products/           # Controller, service, DTO (produits + sous-ressource reviews)
 │   │   └── stats/              # Controller, service, DTO (KPI)
 └── frontend/
+    ├── README.md               # Démarrage, scripts, écrans et composables
     ├── package.json
     ├── .env.example
     └── src/
@@ -258,7 +262,7 @@ sequenceDiagram
 
 ### 8.2 Écran Dashboard
 
-| Section                    | Composant PrimeVue envisagé | Endpoint                               | Composable            |
+| Section                    | Composant                   | Endpoint                               | Composable            |
 |----------------------------|-----------------------------|----------------------------------------|-----------------------|
 | Bandeau KPI                | `KpiBar` : 2 `Card` (icône, chiffre `fr-FR`, libellé) | `GET /stats` | `useStats()`          |
 | 5 produits les plus appréciés | `ProductCards`           | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
@@ -325,16 +329,17 @@ npm run dev              # http://localhost:5173
 | `backend/.env.example`  | `DATABASE_URL`, `PORT`, `CORS_ORIGIN`        |
 | `frontend/.env.example` | `VITE_API_URL`                              |
 
+Le détail (variables, scripts, dépannage) est dans [`backend/README.md`](../backend/README.md) et [`frontend/README.md`](../frontend/README.md).
+
 **Migrations automatiques.** Les scripts `prestart`, `prestart:dev` et `prestart:debug` appellent `npm run db:deploy` (`prisma migrate deploy && prisma generate`) : `npm run start:dev` applique donc les migrations en attente avant de lancer l'API, puis le seed remplit la base si elle est vide. Le client Prisma est aussi généré au `postinstall`. Pour que ce `postinstall` passe sans `.env` (clone neuf, CI), `prisma.config.ts` lit `process.env.DATABASE_URL` au lieu de `env('DATABASE_URL')` : `prisma generate` n'a pas besoin de la base, seules les commandes `migrate` exigent la variable.
 
 ---
 
 ## 10. Qualité
 
-- **Lint et formatage** : Prettier dans les deux applications ; oxlint (avec règles typées) côté API ; oxlint puis ESLint côté front (`npm run lint`), plus la vérification de types des `.vue` par `vue-tsc` (`npm run type-check`).
-- **Tests API** :
-  - unitaires (Vitest), sur les services, et en particulier sur les calculs d'agrégats ;
-- **Tests front** : Vitest, sur les composables et les composants clés.
+- **Lint et formatage** : Prettier dans les deux applications (`npm run format`) ; oxlint (avec règles typées) côté API ; oxlint puis ESLint côté front (`npm run lint`), plus la vérification de types des `.vue` par `vue-tsc` (`npm run type-check`).
+- **Tests API** : unitaires (Vitest, `npm test`), sur les services (en particulier les calculs d'agrégats et le mapping vers les DTO), le seed (transformation du JSON et insertion), la validation de l'environnement et le DTO `limit`. Pas de tests e2e.
+- **Tests front** : unitaires (Vitest + `@vue/test-utils` en jsdom, `npm test`), sur les composants, les vues, le client HTTP, le preset de thème et `formatDate`.
 
 ---
 
