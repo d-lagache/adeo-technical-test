@@ -25,3 +25,28 @@ export interface MostAppreciatedProduct extends ProductSummary {
   /** Nombre d'avis de note strictement supérieure à 3. */
   positiveReviewsCount: number
 }
+
+/** Détail d'un produit : résumé + description (`GET /products/:reference`). */
+export interface ProductDetail extends ProductSummary {
+  description: string
+}
+
+/** Profil de l'auteur d'un avis. */
+export type AuthorType = 'professional' | 'amateur'
+
+/** Auteur d'un avis (aucun identifiant exposé). */
+export interface Author {
+  firstName: string
+  lastName: string
+  type: AuthorType
+}
+
+/** Avis client, auteur inclus (`GET /products/:reference/reviews`), du plus récent au plus ancien. */
+export interface Review {
+  /** Note de 1 à 5. */
+  notation: number
+  comment: string
+  /** Date ISO 8601. */
+  date: string
+  author: Author
+}

@@ -111,11 +111,11 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
         ├── router/             # Routes : / (dashboard) et /products/:reference (détail)
         ├── theme/              # adeoPreset : preset Aura aux couleurs ADEO
         ├── api/                # Client HTTP et types des réponses
-        ├── composables/        # useStats, useProducts, useMostAppreciated…
+        ├── composables/        # useStats, useProducts, useMostAppreciated, useProduct…
         ├── components/         # KpiBar, ProductCard(s), ProductRating, CatalogueSection…
         ├── test-utils/         # Routeur mémoire pour les tests de composants
-        ├── utils/              # Fonctions pures partagées (formatPrice)
-        └── views/              # DashboardView
+        ├── utils/              # Fonctions pures partagées (formatPrice, formatDate)
+        └── views/              # DashboardView, ProductDetailView
 ```
 
 ---
@@ -283,6 +283,19 @@ export function useStats() {
 
 - Chaque section se charge **indépendamment**, avec ses propres états loading et error.
 - Vue Query est **100 % Composition API** : `useQuery` s'appelle dans `<script setup>` ou dans un composable. La seule ligne hors composant est `app.use(VueQueryPlugin)` dans `main.ts`.
+
+### 8.4 Écran Détail produit
+
+Route `/products/:reference` (`ProductDetailView`, chargée en lazy, `reference` reçue en prop). On y arrive en cliquant sur n'importe quelle carte produit ; le titre de l'application ramène au dashboard.
+
+| Bloc              | Contenu                                                            | Endpoint                          | Composable                     |
+|-------------------|--------------------------------------------------------------------|-----------------------------------|--------------------------------|
+| Produit           | Nom, référence, prix, stock, `ProductRating`, description          | `GET /products/:reference`        | `useProduct(reference)`        |
+| Avis clients      | Note, auteur, type (Professionnel / Amateur), date `fr-FR`, commentaire | `GET /products/:reference/reviews` | `useProductReviews(reference)` |
+
+- Deux requêtes indépendantes, chacune avec son skeleton et son message d'erreur.
+- Une **404** affiche « Produit introuvable » ; elle n'est pas rejouée par Vue Query (`retryUnlessNotFound`), contrairement aux autres erreurs (3 essais par défaut).
+- Liste d'avis vide : « Aucun avis ».
 
 ---
 

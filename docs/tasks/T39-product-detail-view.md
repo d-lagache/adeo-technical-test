@@ -30,5 +30,5 @@ Afficher le détail d'un produit, sa note et la liste de tous ses avis.
 
 ## Fait quand
 
-- [ ] `/products/<reference>` affiche le produit et autant d'avis que `reviewsCount`.
-- [ ] `/products/inconnu` affiche « Produit introuvable ».
+- [x] `/products/<reference>` affiche le produit et autant d'avis que `reviewsCount`.
+- [x] `/products/inconnu` affiche « Produit introuvable ».

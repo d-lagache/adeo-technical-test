@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 36 / 39**
+**Avancement : 37 / 39**
 
 ## Phase 0 — Socle du dépôt
 
@@ -67,7 +67,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T36 — Carte produit unifiée](./tasks/T36-product-card.md) | T28, T29, T34 |
 | ✅ | [T37 — Catalogue en cartes](./tasks/T37-catalogue-cards.md) | T30, T36 |
 | ✅ | [T38 — Routing](./tasks/T38-vue-router.md) | T31 |
-| ⬜ | [T39 — Page de détail produit](./tasks/T39-product-detail-view.md) | T19, T20, T36, T38 |
+| ✅ | [T39 — Page de détail produit](./tasks/T39-product-detail-view.md) | T19, T20, T36, T38 |
 
 ## Phase 4 — Finalisation
 
