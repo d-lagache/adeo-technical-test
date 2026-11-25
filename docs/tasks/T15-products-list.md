@@ -26,5 +26,5 @@ Exposer le catalogue complet en version résumée, agrégats calculés en SQL.
 
 ## Fait quand
 
-- [ ] `curl .../products | jq length` → 250.
-- [ ] Aucun champ `id` dans la réponse.
+- [x] `curl .../products | jq length` → 250.
+- [x] Aucun champ `id` dans la réponse.
