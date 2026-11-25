@@ -23,5 +23,5 @@ Isoler la transformation `products.json` → lignes à insérer, testable sans b
 
 ## Fait quand
 
-- [ ] `npx vitest run src/seed` passe.
-- [ ] Le test sur `data/products.json` vérifie 250 produits, 766 avis, 766 auteurs.
+- [x] `npx vitest run src/seed` passe.
+- [x] Le test sur `data/products.json` vérifie 250 produits, 766 avis, 766 auteurs.
