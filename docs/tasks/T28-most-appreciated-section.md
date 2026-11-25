@@ -12,15 +12,16 @@ Afficher les 5 produits ayant le plus d'avis positifs.
 
 - `frontend/src/composables/useMostAppreciated.ts`
 - `frontend/src/components/ProductCards.vue`
-- `frontend/src/components/ProductCards.spec.ts`
+- `frontend/src/components/MostAppreciatedSection.vue` (branche le composable sur `ProductCards`)
+- `frontend/src/components/__tests__/ProductCards.spec.ts` (dossier `__tests__` imposé par les `tsconfig` du scaffold)
 
 ## Étapes
 
 1. `useMostAppreciated()` appelle `/products/most-appreciated?limit=5`.
-2. `ProductCards` réutilisable : props `title`, `products`, `loading`, `error`, slot ou prop pour la métrique mise en avant.
+2. `ProductCards` réutilisable : props `title`, `products`, `loading`, `error`, slot `metric` (typé, composant générique) pour la métrique mise en avant.
 3. Afficher `positiveReviewsCount`.
-4. Test : rendu de N cartes.
+4. Test : rendu de N cartes dans l'ordre reçu, états chargement / erreur / liste vide.
 
 ## Fait quand
 
-- [ ] 5 cartes affichées, triées par nombre d'avis positifs.
+- [x] 5 cartes affichées, triées par nombre d'avis positifs.
