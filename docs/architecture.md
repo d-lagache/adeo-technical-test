@@ -55,7 +55,7 @@ flowchart LR
 | Configuration   | `@nestjs/config`                                | 12.1             | Lecture et validation des variables d'environnement         |
 | Frontend        | Vue 3 (Composition API, `<script setup>`)       | 3.5              | Dashboard                                                   |
 | Build front     | Vite + `@vitejs/plugin-vue` + `vue-tsc`         | 8.3 / 6.0 / 3.3  | Serveur de dev, build et vérification de types              |
-| UI              | PrimeVue + `@primeuix/themes` (thème par défaut) | 5.0 / 3.1       | Bibliothèque de composants                                  |
+| UI              | PrimeVue + `@primeuix/themes` (thème par défaut) | 4.5 / 2.0       | Bibliothèque de composants                                  |
 | Données front   | TanStack Vue Query (`@tanstack/vue-query`)      | 5.108            | Appels API, cache, états loading/error                      |
 | Tests API       | Vitest (`vitest`, `@vitest/coverage-v8`)        | 5.1              | Tests unitaires                                             |
 | Tests front     | Vitest + `@vue/test-utils`                      | 5.1 / 2.6        | Tests unitaires                                             |
@@ -67,6 +67,7 @@ Versions stables relevées sur le registre npm à l'initialisation (novembre 202
 - **Prisma 7.10 et non 8** : le tag `latest` de `prisma` pointe sur une *release candidate* (`8.0.0-rc`) ; on reste sur la dernière version stable, alignée avec `@prisma/client`.
 - **TypeScript 6.0 et non 7** : `@nestjs/cli` 12 embarque TypeScript `~6.0` et `typescript-eslint` (front) exige `< 6.1`.
 - **Backend en ESM, testé avec Vitest et linté avec oxlint** : ce sont les choix par défaut du CLI NestJS 12, dont les paquets sont désormais *ESM-only*. Jest ne gère l'ESM qu'en mode expérimental (`--experimental-vm-modules`) ; Vitest le gère nativement et c'est aussi le runner du front, donc un seul outil de test pour tout le dépôt. Conséquences : `"type": "module"`, imports relatifs suffixés par `.js`, `import.meta.dirname` au lieu de `__dirname`, mocks en `vi.fn()`.
+- **PrimeVue 4.5 et non 5** : depuis la v5, PrimeVue (et `@primeuix/themes` 3) n'est plus sous licence MIT mais sous licence commerciale PrimeUI, avec une clé de licence obligatoire (une notice s'affiche sans clé). La 4.5, dernière version MIT, fournit tous les composants utiles au dashboard ; elle s'utilise avec `@primeuix/themes` 2.0 (preset `Aura`).
 - **Front généré avec `create-vue`** (`--ts --vitest --eslint --prettier --bare`, sans router ni Pinia : un seul écran, l'état serveur est porté par Vue Query). Le template épingle Vitest 4 : il est monté en 5.1 pour avoir la même version que le backend, et Prettier en 3.10. Il lint en deux passes, oxlint puis ESLint (`eslint-plugin-oxlint` désactive dans ESLint les règles déjà couvertes par oxlint) ; ce choix par défaut est conservé. Le template déclare `engines.node` `^22.18.0 || >=24.12.0` : utiliser une version 24 récente (`nvm install 24`).
 - **Scaffold nettoyé** : le CLI ajoute `@nestjs/observe` (télémétrie vers un service SaaS externe) et `@nestjs/mau` (déploiement) ; ils sont retirés, hors périmètre d'un test local.
 
