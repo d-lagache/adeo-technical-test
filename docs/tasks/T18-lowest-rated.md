@@ -23,4 +23,4 @@ Les N produits dont la moyenne est strictement inférieure à 3.
 
 ## Fait quand
 
-- [ ] `curl '.../products/lowest-rated?limit=5'` → ≤ 5 produits, `averageNotation < 3`, ordre croissant.
+- [x] `curl '.../products/lowest-rated?limit=5'` → ≤ 5 produits, `averageNotation < 3`, ordre croissant.

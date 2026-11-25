@@ -131,3 +131,55 @@ describe('toMostAppreciatedProductDto', () => {
     expect(dto).not.toHaveProperty('id');
   });
 });
+
+describe('ProductsService.findLowestRated', () => {
+  const setup = (rows: unknown[] = []) => {
+    const prisma = { $queryRaw: vi.fn().mockResolvedValue(rows) };
+    return {
+      prisma,
+      service: new ProductsService(prisma as unknown as PrismaService),
+    };
+  };
+
+  it('exclut les produits de moyenne exactement 3 (comparaison stricte)', async () => {
+    const { prisma, service } = setup();
+
+    await service.findLowestRated(5);
+
+    const sql = flat(sqlOf(prisma.$queryRaw));
+    expect(sql).toContain('HAVING AVG(r.notation) < 3');
+    expect(sql).not.toContain('<= 3');
+  });
+
+  it('exclut les produits sans avis (jointure interne)', async () => {
+    const { prisma, service } = setup();
+
+    await service.findLowestRated(5);
+
+    const sql = flat(sqlOf(prisma.$queryRaw));
+    expect(sql).toContain('INNER JOIN reviews r');
+    expect(sql).not.toContain('LEFT JOIN');
+  });
+
+  it('trie par moyenne croissante puis par référence, et applique la limite', async () => {
+    const { prisma, service } = setup();
+
+    await service.findLowestRated(3);
+
+    const sql = sqlOf(prisma.$queryRaw);
+    expect(flat(sql)).toContain(
+      'ORDER BY AVG(r.notation) ASC, p.reference LIMIT $1',
+    );
+    expect(sql.values).toEqual([3]);
+  });
+
+  it('mappe les lignes en résumés produit', async () => {
+    const { service } = setup([
+      row({ averageNotation: new Prisma.Decimal('1.5') }),
+    ]);
+
+    const [product] = await service.findLowestRated(5);
+
+    expect(product.averageNotation).toBe(1.5);
+  });
+});

@@ -88,4 +88,20 @@ export class ProductsService {
        LIMIT ${limit}`);
     return rows.map(toMostAppreciatedProductDto);
   }
+
+  /**
+   * Les `limit` produits de moyenne strictement inférieure à 3, du moins bien noté
+   * au mieux noté. L'`INNER JOIN` exclut les produits sans avis.
+   */
+  async findLowestRated(limit: number): Promise<ProductSummaryDto[]> {
+    const rows = await this.prisma.$queryRaw<ProductSummaryRow[]>(Prisma.sql`
+      SELECT ${SUMMARY_COLUMNS}
+        FROM products p
+       INNER JOIN reviews r ON r.product_id = p.id
+       GROUP BY p.id
+      HAVING AVG(r.notation) < 3
+       ORDER BY AVG(r.notation) ASC, p.reference
+       LIMIT ${limit}`);
+    return rows.map(toProductSummaryDto);
+  }
 }

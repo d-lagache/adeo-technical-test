@@ -42,4 +42,20 @@ export class ProductsController {
   ): Promise<MostAppreciatedProductDto[]> {
     return this.productsService.findMostAppreciated(limit);
   }
+
+  @Get('lowest-rated')
+  @ApiOperation({
+    summary: 'Produits les moins bien notés',
+    description:
+      'Produits dont la note moyenne est strictement inférieure à 3, triés par moyenne croissante puis par référence. Les produits sans avis sont exclus.',
+  })
+  @ApiOkResponse({ type: [ProductSummaryDto] })
+  @ApiBadRequestResponse({
+    description: '`limit` hors de [1, 50] ou non entier',
+  })
+  findLowestRated(
+    @Query() { limit }: LimitQueryDto,
+  ): Promise<ProductSummaryDto[]> {
+    return this.productsService.findLowestRated(limit);
+  }
 }
