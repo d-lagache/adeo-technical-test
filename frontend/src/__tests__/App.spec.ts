@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createMemoryHistory, createRouter, type RouteRecordRaw } from 'vue-router'
 
 import App from '../App.vue'
+import { routes } from '@/router'
 
 const Dashboard = defineComponent({ render: () => h('p', 'dashboard') })
 const Detail = defineComponent({
@@ -14,10 +15,13 @@ const Detail = defineComponent({
 const mountApp = async (path: string) => {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: [
-      { path: '/', name: 'dashboard', component: Dashboard },
-      { path: '/products/:reference', name: 'product-detail', component: Detail, props: true },
-    ],
+    // Vraies routes de l'application, vues remplacées par des stubs (pas d'appel API).
+    routes: routes.map((route): RouteRecordRaw => ({
+      path: route.path,
+      name: route.name,
+      props: true,
+      component: route.name === 'dashboard' ? Dashboard : Detail,
+    })),
   })
   await router.push(path)
   const wrapper = mount(App, { global: { plugins: [router] } })

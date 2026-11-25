@@ -4,6 +4,7 @@ import Message from 'primevue/message'
 import Skeleton from 'primevue/skeleton'
 
 import { useStats } from '@/composables/useStats'
+import { formatCount } from '@/utils/formatNumber'
 
 const { data: stats, isPending, isError } = useStats()
 
@@ -11,8 +12,6 @@ const kpis = [
   { label: 'Produits au catalogue', key: 'totalProducts', icon: 'pi pi-box' },
   { label: 'Avis clients', key: 'totalReviews', icon: 'pi pi-comments' },
 ] as const
-
-const formatCount = (value: number) => new Intl.NumberFormat('fr-FR').format(value)
 </script>
 
 <template>

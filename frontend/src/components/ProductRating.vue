@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import Rating from 'primevue/rating'
 
+import { formatNotation } from '@/utils/formatNumber'
+
 const { averageNotation, reviewsCount } = defineProps<{
   /** Note moyenne de 1 à 5, `null` si le produit n'a aucun avis. */
   averageNotation: number | null
   reviewsCount: number
 }>()
-
-const formatNotation = (value: number) =>
-  new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 }).format(value)
 </script>
 
 <template>

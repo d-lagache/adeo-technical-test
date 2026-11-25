@@ -36,7 +36,7 @@ const authorTypeLabels: Record<AuthorType, string> = {
 
 <template>
   <div style="display: flex; flex-direction: column; gap: 1.5rem">
-    <RouterLink to="/" style="color: var(--p-primary-color)">
+    <RouterLink :to="{ name: 'dashboard' }" style="color: var(--p-primary-color)">
       <i class="pi pi-arrow-left" aria-hidden="true" /> Retour au dashboard
     </RouterLink>
 
