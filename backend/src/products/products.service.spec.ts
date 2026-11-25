@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '../generated/prisma/client.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import {
@@ -181,5 +182,36 @@ describe('ProductsService.findLowestRated', () => {
     const [product] = await service.findLowestRated(5);
 
     expect(product.averageNotation).toBe(1.5);
+  });
+});
+
+describe('ProductsService.findOne', () => {
+  const setup = (rows: unknown[]) => {
+    const prisma = { $queryRaw: vi.fn().mockResolvedValue(rows) };
+    return {
+      prisma,
+      service: new ProductsService(prisma as unknown as PrismaService),
+    };
+  };
+
+  it('renvoie le résumé et la description du produit demandé', async () => {
+    const { prisma, service } = setup([
+      { ...row(), description: 'Perceuse sans fil' },
+    ]);
+
+    const product = await service.findOne('REF-001');
+
+    expect(product).toMatchObject(toProductSummaryDto(row()));
+    expect(product.description).toBe('Perceuse sans fil');
+    expect(product).not.toHaveProperty('reviews');
+    expect(sqlOf(prisma.$queryRaw).values).toEqual(['REF-001']);
+  });
+
+  it('lève une 404 si la référence est inconnue', async () => {
+    const { service } = setup([]);
+
+    await expect(service.findOne('inconnu')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
   });
 });

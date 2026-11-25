@@ -23,5 +23,5 @@ Détail d'un produit, sans ses avis.
 
 ## Fait quand
 
-- [ ] `curl .../products/59033201` → 200 avec `description`.
-- [ ] `curl .../products/inconnu` → 404 `{ statusCode, message, error }`.
+- [x] `curl .../products/59033201` → 200 avec `description`.
+- [x] `curl .../products/inconnu` → 404 `{ statusCode, message, error }`.

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { ProductDetailDto } from './dto/product-detail.dto.js';
 import { MostAppreciatedProductDto } from './dto/most-appreciated-product.dto.js';
 import { ProductSummaryDto } from './dto/product-summary.dto.js';
 
@@ -17,6 +18,10 @@ export interface ProductSummaryRow {
 
 export interface MostAppreciatedRow extends ProductSummaryRow {
   positiveReviewsCount: number;
+}
+
+export interface ProductDetailRow extends ProductSummaryRow {
+  description: string;
 }
 
 /** Convertit une ligne SQL en DTO : `Decimal` → number, moyenne arrondie à 2 décimales. */
@@ -40,6 +45,12 @@ export function toMostAppreciatedProductDto(
 ): MostAppreciatedProductDto {
   return Object.assign(toProductSummaryDto(row), {
     positiveReviewsCount: row.positiveReviewsCount,
+  });
+}
+
+export function toProductDetailDto(row: ProductDetailRow): ProductDetailDto {
+  return Object.assign(toProductSummaryDto(row), {
+    description: row.description,
   });
 }
 
@@ -103,5 +114,20 @@ export class ProductsService {
        ORDER BY AVG(r.notation) ASC, p.reference
        LIMIT ${limit}`);
     return rows.map(toProductSummaryDto);
+  }
+
+  /** Détail d'un produit (résumé + description), sans ses avis. 404 si la référence est inconnue. */
+  async findOne(reference: string): Promise<ProductDetailDto> {
+    const [row] = await this.prisma.$queryRaw<ProductDetailRow[]>(Prisma.sql`
+      SELECT ${SUMMARY_COLUMNS},
+             p.description
+        FROM products p
+        LEFT JOIN reviews r ON r.product_id = p.id
+       WHERE p.reference = ${reference}
+       GROUP BY p.id`);
+    if (!row) {
+      throw new NotFoundException(`Produit ${reference} introuvable`);
+    }
+    return toProductDetailDto(row);
   }
 }

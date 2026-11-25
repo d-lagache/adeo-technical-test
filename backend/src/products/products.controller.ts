@@ -1,11 +1,14 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { LimitQueryDto } from './dto/limit-query.dto.js';
+import { ProductDetailDto } from './dto/product-detail.dto.js';
 import { MostAppreciatedProductDto } from './dto/most-appreciated-product.dto.js';
 import { ProductSummaryDto } from './dto/product-summary.dto.js';
 import { ProductsService } from './products.service.js';
@@ -57,5 +60,18 @@ export class ProductsController {
     @Query() { limit }: LimitQueryDto,
   ): Promise<ProductSummaryDto[]> {
     return this.productsService.findLowestRated(limit);
+  }
+
+  @Get(':reference')
+  @ApiOperation({ summary: "Détail d'un produit, sans ses avis" })
+  @ApiParam({
+    name: 'reference',
+    description: 'Référence du produit',
+    example: '59033201',
+  })
+  @ApiOkResponse({ type: ProductDetailDto })
+  @ApiNotFoundResponse({ description: 'Référence inconnue' })
+  findOne(@Param('reference') reference: string): Promise<ProductDetailDto> {
+    return this.productsService.findOne(reference);
   }
 }
