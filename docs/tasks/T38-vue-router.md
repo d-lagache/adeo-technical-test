@@ -27,4 +27,4 @@ Introduire `vue-router` pour pouvoir ouvrir une page de détail produit adressab
 
 ## Fait quand
 
-- [ ] Un clic sur une carte change l'URL en `/products/<reference>`.
+- [x] Un clic sur une carte change l'URL en `/products/<reference>`.

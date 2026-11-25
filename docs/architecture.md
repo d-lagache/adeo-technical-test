@@ -11,7 +11,7 @@ flowchart LR
     user([Navigateur])
 
     subgraph frontend["frontend/ — Vue 3 + Vite"]
-        views[Vue Dashboard<br/>PrimeVue]
+        views[Vues Dashboard / Détail<br/>PrimeVue + vue-router]
         composables[Composables<br/>TanStack Vue Query]
     end
 
@@ -56,6 +56,7 @@ flowchart LR
 | Frontend        | Vue 3 (Composition API, `<script setup>`)       | 3.5              | Dashboard                                                   |
 | Build front     | Vite + `@vitejs/plugin-vue` + `vue-tsc`         | 8.3 / 6.0 / 3.3  | Serveur de dev, build et vérification de types              |
 | UI              | PrimeVue + `@primeuix/themes` (preset Aura aux couleurs ADEO) + `primeicons` | 4.5 / 2.0 / 7.0 | Bibliothèque de composants, thème et icônes |
+| Routage front   | `vue-router`                                    | 5.5              | Dashboard et page de détail produit adressable par URL      |
 | Données front   | TanStack Vue Query (`@tanstack/vue-query`)      | 5.108            | Appels API, cache, états loading/error                      |
 | Tests API       | Vitest (`vitest`, `@vitest/coverage-v8`)        | 5.1              | Tests unitaires                                             |
 | Tests front     | Vitest + `@vue/test-utils`                      | 5.1 / 2.6        | Tests unitaires                                             |
@@ -68,7 +69,7 @@ Versions stables relevées sur le registre npm à l'initialisation (novembre 202
 - **TypeScript 6.0 et non 7** : `@nestjs/cli` 12 embarque TypeScript `~6.0` et `typescript-eslint` (front) exige `< 6.1`.
 - **Backend en ESM, testé avec Vitest et linté avec oxlint** : ce sont les choix par défaut du CLI NestJS 12, dont les paquets sont désormais *ESM-only*. Jest ne gère l'ESM qu'en mode expérimental (`--experimental-vm-modules`) ; Vitest le gère nativement et c'est aussi le runner du front, donc un seul outil de test pour tout le dépôt. Conséquences : `"type": "module"`, imports relatifs suffixés par `.js`, `import.meta.dirname` au lieu de `__dirname`, mocks en `vi.fn()`.
 - **PrimeVue 4.5 et non 5** : depuis la v5, PrimeVue (et `@primeuix/themes` 3) n'est plus sous licence MIT mais sous licence commerciale PrimeUI, avec une clé de licence obligatoire (une notice s'affiche sans clé). La 4.5, dernière version MIT, fournit tous les composants utiles au dashboard ; elle s'utilise avec `@primeuix/themes` 2.0 (preset `Aura`). Même situation pour `primeicons` : la 8 passe sous licence PrimeUI, on reste sur la 7.0 (MIT).
-- **Front généré avec `create-vue`** (`--ts --vitest --eslint --prettier --bare`, sans router ni Pinia : un seul écran, l'état serveur est porté par Vue Query). Le template épingle Vitest 4 : il est monté en 5.1 pour avoir la même version que le backend, et Prettier en 3.10. Il lint en deux passes, oxlint puis ESLint (`eslint-plugin-oxlint` désactive dans ESLint les règles déjà couvertes par oxlint) ; ce choix par défaut est conservé. Le template déclare `engines.node` `^22.18.0 || >=24.12.0` : utiliser une version 24 récente (`nvm install 24`).
+- **Front généré avec `create-vue`** (`--ts --vitest --eslint --prettier --bare`, sans router ni Pinia : l'état serveur est porté par Vue Query). `vue-router` a été ajouté ensuite, avec la page de détail produit (voir §8.4) ; Pinia reste inutile. Le template épingle Vitest 4 : il est monté en 5.1 pour avoir la même version que le backend, et Prettier en 3.10. Il lint en deux passes, oxlint puis ESLint (`eslint-plugin-oxlint` désactive dans ESLint les règles déjà couvertes par oxlint) ; ce choix par défaut est conservé. Le template déclare `engines.node` `^22.18.0 || >=24.12.0` : utiliser une version 24 récente (`nvm install 24`).
 - **Scaffold nettoyé** : le CLI ajoute `@nestjs/observe` (télémétrie vers un service SaaS externe) et `@nestjs/mau` (déploiement) ; ils sont retirés, hors périmètre d'un test local.
 
 ---
@@ -106,11 +107,13 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
     ├── package.json
     ├── .env.example
     └── src/
-        ├── main.ts             # Création de l'app, PrimeVue (preset ADEO), VueQueryPlugin
+        ├── main.ts             # Création de l'app, PrimeVue (preset ADEO), VueQueryPlugin, router
+        ├── router/             # Routes : / (dashboard) et /products/:reference (détail)
         ├── theme/              # adeoPreset : preset Aura aux couleurs ADEO
         ├── api/                # Client HTTP et types des réponses
         ├── composables/        # useStats, useProducts, useMostAppreciated…
         ├── components/         # KpiBar, ProductCard(s), ProductRating, CatalogueSection…
+        ├── test-utils/         # Routeur mémoire pour les tests de composants
         ├── utils/              # Fonctions pures partagées (formatPrice)
         └── views/              # DashboardView
 ```
@@ -262,7 +265,7 @@ sequenceDiagram
 | 5 produits les moins bien notés | `ProductCards`         | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
 | Catalogue complet          | `CatalogueSection` → `ProductCards`, 250 cartes sans pagination | `GET /products` | `useProducts()` |
 
-Les trois listes partagent la même carte : `ProductCard` (nom, « Réf. », prix, `ProductRating`). `ProductRating` affiche un `Rating` en lecture seule (étoiles entières) suivi de la note exacte (« 4,2 / 5 (12 avis) »), ou « Pas encore d'avis ». `ProductCards` les dispose en grille CSS `auto-fill` et gère les états chargement / erreur / vide ; l'ordre est celui de l'API. Le nombre d'avis positifs renvoyé par `most-appreciated` sert au classement côté serveur mais n'est plus affiché, pour garder une carte identique partout.
+Les trois listes partagent la même carte : `ProductCard` (nom, « Réf. », prix, `ProductRating`), lien vers la page de détail. `ProductRating` affiche un `Rating` en lecture seule (étoiles entières) suivi de la note exacte (« 4,2 / 5 (12 avis) »), ou « Pas encore d'avis ». `ProductCards` les dispose en grille CSS `auto-fill` et gère les états chargement / erreur / vide ; l'ordre est celui de l'API. Le nombre d'avis positifs renvoyé par `most-appreciated` sert au classement côté serveur mais n'est plus affiché, pour garder une carte identique partout.
 
 ### 8.3 Accès aux données
 
@@ -339,4 +342,5 @@ npm run dev              # http://localhost:5173
 - **PrimeVue.** La bibliothèque est complète et adaptée aux dashboards (`Card`, `Rating`, `Skeleton`, `Message`…), ce qui permet d'avoir une interface propre sans CSS sur mesure, comme le demande le README.
 - **Preset aux couleurs ADEO plutôt que le thème par défaut.** Le système de thème de PrimeVue est piloté par des design tokens : `definePreset` remplace la palette primaire d'Aura par celle du design system ADEO (Mozaic), sans écrire de CSS. L'interface est aux couleurs de l'enseigne tout en restant le thème standard pour tout le reste.
 - **Cartes partout plutôt qu'un `DataTable` pour le catalogue.** Une seule carte produit pour les classements et le catalogue : même lecture d'un produit partout, et un seul composant à tester. Le `DataTable` apportait tri et colonnes, inutiles ici (« No filtering or pagination required »).
+- **vue-router.** La page de détail est adressable par URL : elle se partage, se recharge, et le bouton retour du navigateur fonctionne. Elle est chargée à la demande, donc le dashboard n'embarque pas son code.
 - **TanStack Vue Query.** Il gère le cache et les états loading/error de chaque section sans code répétitif. Il est conçu pour la Composition API (fonctions `useQuery`), ce qui respecte la règle « Composition API exclusively ».

@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import DashboardView from './views/DashboardView.vue'
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
   <main style="padding: 1rem">
-    <h1>Dashboard catalogue</h1>
-    <DashboardView />
+    <h1>
+      <RouterLink to="/" style="color: inherit; text-decoration: none"
+        >Dashboard catalogue</RouterLink
+      >
+    </h1>
+    <RouterView />
   </main>
 </template>

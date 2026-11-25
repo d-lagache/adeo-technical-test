@@ -4,6 +4,7 @@ import PrimeVue from 'primevue/config'
 
 import ProductCards from '../ProductCards.vue'
 import type { ProductSummary } from '@/api/types'
+import { createTestRouter } from '@/test-utils/router'
 
 const product = (reference: string, averageNotation: number): ProductSummary => ({
   reference,
@@ -21,7 +22,7 @@ const products = [product('3', 2), product('1', 4), product('2', 3)]
 const mountCards = (props: Record<string, unknown>) =>
   mount(ProductCards, {
     props: { title: 'Classement', ...props },
-    global: { plugins: [PrimeVue] },
+    global: { plugins: [PrimeVue, createTestRouter()] },
   })
 
 describe('ProductCards', () => {
