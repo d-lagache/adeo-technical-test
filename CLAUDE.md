@@ -62,5 +62,6 @@ Front (Vue 3) → HTTP JSON → API NestJS → Prisma → PostgreSQL (Docker). S
 
 **Frontend Vue 3** :
 - Composition API exclusivement (`<script setup lang="ts">`) — exigence de l'énoncé, aucune Options API.
-- PrimeVue avec thème par défaut, pas de CSS sur mesure ni d'animations.
+- PrimeVue avec un preset Aura personnalisé aux couleurs ADEO (`definePreset`, `src/theme/adeoPreset.ts`, tokens Mozaic), mode clair uniquement ; icônes `primeicons`. Toujours pas de CSS sur mesure ni d'animations : seules des règles de mise en page en `style` inline et les variables du thème (`var(--p-…)`).
+- PrimeVue 4.5 et `primeicons` 7 : dernières versions MIT, ne pas monter en PrimeVue 5 / primeicons 8 (licence commerciale PrimeUI).
 - Un composable TanStack Vue Query par section du dashboard (`useStats`, `useMostAppreciated`, `useLowestRated`, `useProducts`), chacune avec ses propres états loading/error.

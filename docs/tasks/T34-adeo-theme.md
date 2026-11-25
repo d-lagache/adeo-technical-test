@@ -29,5 +29,5 @@ Habiller le dashboard aux couleurs de l'enseigne ADEO. On passe par les tokens d
 
 ## Fait quand
 
-- [ ] Boutons, liens, étoiles et icônes du dashboard en teal ADEO.
-- [ ] Docs et `CLAUDE.md` alignés sur la nouvelle règle de thème.
+- [x] Boutons, liens, étoiles et icônes du dashboard en teal ADEO.
+- [x] Docs et `CLAUDE.md` alignés sur la nouvelle règle de thème.
