@@ -110,6 +110,7 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
         ├── api/                # Client HTTP et types des réponses
         ├── composables/        # useStats, useProducts, useMostAppreciated…
         ├── components/         # KpiBar, ProductCards, ProductTable…
+        ├── utils/              # Fonctions pures partagées (formatPrice)
         └── views/              # DashboardView
 ```
 

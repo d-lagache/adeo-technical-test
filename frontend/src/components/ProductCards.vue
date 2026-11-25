@@ -4,6 +4,7 @@ import Message from 'primevue/message'
 import Skeleton from 'primevue/skeleton'
 
 import type { ProductSummary } from '@/api/types'
+import { formatPrice } from '@/utils/formatPrice'
 
 const {
   loading = false,
@@ -22,11 +23,6 @@ defineSlots<{
   /** Métrique mise en avant sur chaque carte (nombre d'avis positifs, note moyenne…). */
   metric(props: { product: T }): unknown
 }>()
-
-const formatPrice = (product: ProductSummary) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: product.currency }).format(
-    product.price,
-  )
 </script>
 
 <template>
@@ -49,7 +45,7 @@ const formatPrice = (product: ProductSummary) =>
         style="flex: 1 1 14rem"
       >
         <template #title>{{ product.name }}</template>
-        <template #subtitle>Réf. {{ product.reference }} · {{ formatPrice(product) }}</template>
+        <template #subtitle>Réf. {{ product.reference }} · {{ formatPrice(product.price, product.currency) }}</template>
         <template #content>
           <slot name="metric" :product="product" />
         </template>

@@ -12,6 +12,7 @@ Lister tous les produits, sans filtre ni pagination.
 
 - `frontend/src/composables/useProducts.ts`
 - `frontend/src/components/ProductTable.vue`
+- `frontend/src/utils/formatPrice.ts` (formatage partagé avec `ProductCards`)
 
 ## Étapes
 
@@ -21,4 +22,4 @@ Lister tous les produits, sans filtre ni pagination.
 
 ## Fait quand
 
-- [ ] Les 250 produits sont listés.
+- [x] Les 250 produits sont listés.
