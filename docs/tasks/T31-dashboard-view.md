@@ -21,5 +21,5 @@ Composer la page à partir des 4 sections.
 
 ## Fait quand
 
-- [ ] `npm run dev` affiche le dashboard complet.
-- [ ] `grep -rE "data\(\)|methods:" frontend/src` ne renvoie rien.
+- [x] `npm run dev` affiche le dashboard complet.
+- [x] `grep -rE "data\(\)|methods:" frontend/src` ne renvoie rien.

@@ -4,8 +4,10 @@ import { mount } from '@vue/test-utils'
 import App from '../App.vue'
 
 describe('App', () => {
-  it('mounts', () => {
-    const wrapper = mount(App)
-    expect(wrapper.find('main').exists()).toBe(true)
+  it('affiche le dashboard', () => {
+    const wrapper = mount(App, { global: { stubs: { DashboardView: true } } })
+
+    expect(wrapper.find('main h1').text()).toBe('Dashboard catalogue')
+    expect(wrapper.findComponent({ name: 'DashboardView' }).exists()).toBe(true)
   })
 })
