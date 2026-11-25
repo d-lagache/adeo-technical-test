@@ -15,3 +15,6 @@ coverage/
 
 # Réglages locaux Claude Code
 .claude/settings.local.json
+
+# Client Prisma généré (prisma generate)
+backend/src/generated/

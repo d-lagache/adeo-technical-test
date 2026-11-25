@@ -25,5 +25,5 @@ Traduire le modèle relationnel en `schema.prisma`.
 
 ## Fait quand
 
-- [ ] `npx prisma validate` passe.
-- [ ] `npx prisma format` ne produit aucun diff.
+- [x] `npx prisma validate` passe.
+- [x] `npx prisma format` ne produit aucun diff.
