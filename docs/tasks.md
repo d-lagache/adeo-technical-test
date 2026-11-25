@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 2 / 34**
+**Avancement : 3 / 34**
 
 ## Phase 0 — Socle du dépôt
 
@@ -12,7 +12,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 |--------|-------|-----------|
 | ✅ | [T01 — Initialiser le dépôt git](./tasks/T01-init-git.md) | — |
 | ✅ | [T02 — Épingler la version de Node](./tasks/T02-nvmrc.md) | T01 |
-| ⬜ | [T03 — PostgreSQL 18 avec Docker Compose](./tasks/T03-docker-compose.md) | T01 |
+| ✅ | [T03 — PostgreSQL 18 avec Docker Compose](./tasks/T03-docker-compose.md) | T01 |
 
 ## Phase 1 — Backend : socle et base de données
 

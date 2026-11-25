@@ -113,9 +113,11 @@ PostgreSQL tourne dans un conteneur défini dans `docker-compose.yml` à la raci
 |---------------|-----------------------------------------------------------------|
 | Image         | `postgres:18-alpine`                                            |
 | Port          | `5432` exposé sur `localhost`                                   |
-| Volume        | Volume nommé, pour conserver les données entre deux redémarrages |
+| Volume        | Volume nommé `pgdata` monté sur `/var/lib/postgresql`, pour conserver les données entre deux redémarrages |
 | Healthcheck   | `pg_isready`                                                    |
-| Variables     | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`             |
+| Variables     | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` (valeurs de dev : `adeo` / `adeo` / `adeo`) |
+
+À partir de PostgreSQL 18, l'image officielle place les données dans `/var/lib/postgresql/18/docker` (`PGDATA` versionné par majeure). Le volume est donc monté sur le répertoire parent `/var/lib/postgresql` et non plus sur `/var/lib/postgresql/data` comme avant. Les identifiants sont écrits en clair dans `docker-compose.yml` : il s'agit d'une base locale de développement ; l'API s'y connecte via `DATABASE_URL=postgresql://adeo:adeo@localhost:5432/adeo`.
 
 La base est considérée comme **déjà démarrée** quand on lance l'API (`docker compose up -d`).
 
