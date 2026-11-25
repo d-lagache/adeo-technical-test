@@ -1,0 +1,16 @@
+# Dépendances et builds
+node_modules/
+dist/
+coverage/
+
+# Variables d'environnement (seuls les .env.example sont versionnés)
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea/
+.DS_Store
+
+# Réglages locaux Claude Code
+.claude/settings.local.json
