@@ -1,10 +1,9 @@
-<script setup lang="ts" generic="T extends ProductSummary">
-import Card from 'primevue/card'
+<script setup lang="ts">
 import Message from 'primevue/message'
 import Skeleton from 'primevue/skeleton'
 
+import ProductCard from './ProductCard.vue'
 import type { ProductSummary } from '@/api/types'
-import { formatPrice } from '@/utils/formatPrice'
 
 const {
   loading = false,
@@ -12,17 +11,15 @@ const {
   skeletonCount = 5,
 } = defineProps<{
   title: string
-  products?: T[]
+  products?: ProductSummary[]
   loading?: boolean
   error?: boolean
   /** Nombre de cartes fantômes affichées pendant le chargement. */
   skeletonCount?: number
 }>()
 
-defineSlots<{
-  /** Métrique mise en avant sur chaque carte (nombre d'avis positifs, note moyenne…). */
-  metric(props: { product: T }): unknown
-}>()
+const grid =
+  'display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem'
 </script>
 
 <template>
@@ -31,25 +28,14 @@ defineSlots<{
 
     <Message v-if="error" severity="error">Impossible de charger « {{ title }} ».</Message>
 
-    <div v-else-if="loading" style="display: flex; gap: 1rem; flex-wrap: wrap">
-      <Skeleton v-for="n in skeletonCount" :key="n" width="14rem" height="10rem" />
+    <div v-else-if="loading" :style="grid">
+      <Skeleton v-for="n in skeletonCount" :key="n" height="10rem" />
     </div>
 
     <Message v-else-if="!products?.length" severity="info">Aucun produit à afficher.</Message>
 
-    <div v-else style="display: flex; gap: 1rem; flex-wrap: wrap">
-      <Card
-        v-for="product in products"
-        :key="product.reference"
-        data-testid="product-card"
-        style="flex: 1 1 14rem"
-      >
-        <template #title>{{ product.name }}</template>
-        <template #subtitle>Réf. {{ product.reference }} · {{ formatPrice(product.price, product.currency) }}</template>
-        <template #content>
-          <slot name="metric" :product="product" />
-        </template>
-      </Card>
+    <div v-else :style="grid">
+      <ProductCard v-for="product in products" :key="product.reference" :product="product" />
     </div>
   </section>
 </template>

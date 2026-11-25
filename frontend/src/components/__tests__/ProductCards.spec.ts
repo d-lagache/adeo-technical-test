@@ -3,43 +3,37 @@ import { mount } from '@vue/test-utils'
 import PrimeVue from 'primevue/config'
 
 import ProductCards from '../ProductCards.vue'
-import type { MostAppreciatedProduct } from '@/api/types'
+import type { ProductSummary } from '@/api/types'
 
-const product = (reference: string, positiveReviewsCount: number): MostAppreciatedProduct => ({
+const product = (reference: string, averageNotation: number): ProductSummary => ({
   reference,
   name: `Produit ${reference}`,
   price: 10,
   currency: 'EUR',
   stock: 1,
   reviewsCount: 5,
-  averageNotation: 4,
-  positiveReviewsCount,
+  averageNotation,
 })
 
-const products = [product('1', 5), product('2', 4), product('3', 3)]
+// Ordre volontairement non trié : le composant doit conserver celui de l'API.
+const products = [product('3', 2), product('1', 4), product('2', 3)]
 
 const mountCards = (props: Record<string, unknown>) =>
   mount(ProductCards, {
     props: { title: 'Classement', ...props },
-    slots: {
-      metric:
-        '<template #metric="{ product }">{{ product.positiveReviewsCount }} positifs</template>',
-    },
     global: { plugins: [PrimeVue] },
   })
 
 describe('ProductCards', () => {
-  it('rend une carte par produit, dans l’ordre reçu, avec la métrique du slot', () => {
+  it('rend une carte par produit, dans l’ordre reçu', () => {
     const wrapper = mountCards({ products })
 
     const cards = wrapper.findAll('[data-testid="product-card"]')
-    expect(cards).toHaveLength(3)
-    expect(cards.map((card) => card.text())).toEqual([
-      expect.stringContaining('5 positifs'),
-      expect.stringContaining('4 positifs'),
-      expect.stringContaining('3 positifs'),
+    expect(cards.map((card) => card.find('.p-card-title').text())).toEqual([
+      'Produit 3',
+      'Produit 1',
+      'Produit 2',
     ])
-    expect(cards[0]?.text()).toContain('Produit 1')
   })
 
   it('affiche des skeletons pendant le chargement', () => {

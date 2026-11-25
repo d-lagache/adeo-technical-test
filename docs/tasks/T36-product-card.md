@@ -26,4 +26,4 @@ Utiliser une seule structure de carte produit (nom, référence, prix, note, nom
 
 ## Fait quand
 
-- [ ] Les deux classements affichent des cartes de structure identique.
+- [x] Les deux classements affichent des cartes de structure identique.

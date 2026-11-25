@@ -110,7 +110,7 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
         ├── theme/              # adeoPreset : preset Aura aux couleurs ADEO
         ├── api/                # Client HTTP et types des réponses
         ├── composables/        # useStats, useProducts, useMostAppreciated…
-        ├── components/         # KpiBar, ProductCards, ProductTable…
+        ├── components/         # KpiBar, ProductCard(s), ProductRating, ProductTable…
         ├── utils/              # Fonctions pures partagées (formatPrice)
         └── views/              # DashboardView
 ```
@@ -258,9 +258,11 @@ sequenceDiagram
 | Section                    | Composant PrimeVue envisagé | Endpoint                               | Composable            |
 |----------------------------|-----------------------------|----------------------------------------|-----------------------|
 | Bandeau KPI                | `KpiBar` : 2 `Card` (icône, chiffre `fr-FR`, libellé) | `GET /stats` | `useStats()`          |
-| 5 produits les plus appréciés | `Card` / `DataView`      | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
-| 5 produits les moins bien notés | `Card` / `DataView`    | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
+| 5 produits les plus appréciés | `ProductCards`           | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
+| 5 produits les moins bien notés | `ProductCards`         | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
 | Catalogue complet          | `DataTable`, sans pagination | `GET /products`                       | `useProducts()`       |
+
+Les deux classements partagent la même carte : `ProductCard` (nom, « Réf. », prix, `ProductRating`). `ProductRating` affiche un `Rating` en lecture seule (étoiles entières) suivi de la note exacte (« 4,2 / 5 (12 avis) »), ou « Pas encore d'avis ». `ProductCards` les dispose en grille CSS `auto-fill` et gère les états chargement / erreur / vide ; l'ordre est celui de l'API. Le nombre d'avis positifs renvoyé par `most-appreciated` sert au classement côté serveur mais n'est plus affiché, pour garder une carte identique partout.
 
 ### 8.3 Accès aux données
 
