@@ -94,6 +94,7 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
 │   ├── src/
 │   │   ├── main.ts             # Bootstrap, préfixe /api/v1, Swagger, ValidationPipe
 │   │   ├── app.module.ts
+│   │   ├── common/             # Éléments transverses (DTO d'erreur documenté dans Swagger)
 │   │   ├── config/             # Schéma et validation de l'environnement
 │   │   ├── prisma/             # PrismaModule / PrismaService
 │   │   ├── seed/               # SeedModule / SeedService
@@ -176,7 +177,8 @@ flowchart LR
 - Préfixe global : `api/v1`.
 - `ValidationPipe` global (`whitelist`, `transform`). Il valide et convertit les query params, par exemple `limit` en entier compris entre 1 et 50.
 - Swagger UI disponible sur `/api/docs`, et JSON OpenAPI sur `/api/docs-json`.
-  Le plugin CLI `@nestjs/swagger` (déclaré dans `nest-cli.json`, option `introspectComments`) déduit les schémas des types TypeScript des DTO et reprend leurs commentaires JSDoc comme descriptions : peu de décorateurs `@ApiProperty` à écrire.
+  Le plugin CLI `@nestjs/swagger` (déclaré dans `nest-cli.json`, option `introspectComments`) déduit les schémas des types TypeScript des DTO et reprend leurs commentaires JSDoc comme descriptions, et leurs balises `@example` comme exemples : peu de décorateurs `@ApiProperty` à écrire. Les exemples reprennent le produit `59033201` du jeu de données.
+  Chaque route a un `@ApiOperation` (résumé + règle métier), un schéma de réponse 200 et ses codes d'erreur (`400` sur les classements, `404` sur les routes `:reference`). Les erreurs sont documentées par `ApiErrorDto` (`common/dto/`), qui décrit le format NestJS par défaut sans le modifier.
 - CORS activé pour l'origine du front.
 
 ---

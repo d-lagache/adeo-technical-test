@@ -9,7 +9,11 @@ export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Indicateurs globaux du catalogue' })
+  @ApiOperation({
+    summary: 'Indicateurs globaux du catalogue',
+    description:
+      'Nombre total de produits et d’avis, calculés en base à chaque appel.',
+  })
   @ApiOkResponse({ type: StatsDto })
   getStats(): Promise<StatsDto> {
     return this.statsService.getStats();

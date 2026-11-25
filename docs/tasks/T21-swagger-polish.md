@@ -22,5 +22,5 @@ Rendre la documentation suffisante pour consommer l'API sans lire le code.
 
 ## Fait quand
 
-- [ ] Chaque route de Swagger UI a un résumé, un schéma de réponse et ses codes d'erreur.
-- [ ] « Try it out » fonctionne sur chaque route.
+- [x] Chaque route de Swagger UI a un résumé, un schéma de réponse et ses codes d'erreur.
+- [x] « Try it out » fonctionne sur chaque route.
