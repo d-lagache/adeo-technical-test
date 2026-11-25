@@ -23,4 +23,4 @@ Afficher le catalogue complet avec les mêmes cartes que les classements, au lie
 
 ## Fait quand
 
-- [ ] Le catalogue affiche 250 cartes identiques à celles des classements.
+- [x] Le catalogue affiche 250 cartes identiques à celles des classements.

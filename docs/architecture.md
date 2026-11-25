@@ -110,7 +110,7 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
         ├── theme/              # adeoPreset : preset Aura aux couleurs ADEO
         ├── api/                # Client HTTP et types des réponses
         ├── composables/        # useStats, useProducts, useMostAppreciated…
-        ├── components/         # KpiBar, ProductCard(s), ProductRating, ProductTable…
+        ├── components/         # KpiBar, ProductCard(s), ProductRating, CatalogueSection…
         ├── utils/              # Fonctions pures partagées (formatPrice)
         └── views/              # DashboardView
 ```
@@ -260,9 +260,9 @@ sequenceDiagram
 | Bandeau KPI                | `KpiBar` : 2 `Card` (icône, chiffre `fr-FR`, libellé) | `GET /stats` | `useStats()`          |
 | 5 produits les plus appréciés | `ProductCards`           | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
 | 5 produits les moins bien notés | `ProductCards`         | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
-| Catalogue complet          | `DataTable`, sans pagination | `GET /products`                       | `useProducts()`       |
+| Catalogue complet          | `CatalogueSection` → `ProductCards`, 250 cartes sans pagination | `GET /products` | `useProducts()` |
 
-Les deux classements partagent la même carte : `ProductCard` (nom, « Réf. », prix, `ProductRating`). `ProductRating` affiche un `Rating` en lecture seule (étoiles entières) suivi de la note exacte (« 4,2 / 5 (12 avis) »), ou « Pas encore d'avis ». `ProductCards` les dispose en grille CSS `auto-fill` et gère les états chargement / erreur / vide ; l'ordre est celui de l'API. Le nombre d'avis positifs renvoyé par `most-appreciated` sert au classement côté serveur mais n'est plus affiché, pour garder une carte identique partout.
+Les trois listes partagent la même carte : `ProductCard` (nom, « Réf. », prix, `ProductRating`). `ProductRating` affiche un `Rating` en lecture seule (étoiles entières) suivi de la note exacte (« 4,2 / 5 (12 avis) »), ou « Pas encore d'avis ». `ProductCards` les dispose en grille CSS `auto-fill` et gère les états chargement / erreur / vide ; l'ordre est celui de l'API. Le nombre d'avis positifs renvoyé par `most-appreciated` sert au classement côté serveur mais n'est plus affiché, pour garder une carte identique partout.
 
 ### 8.3 Accès aux données
 
@@ -336,6 +336,7 @@ npm run dev              # http://localhost:5173
 - **Seed automatique au démarrage, si la base est vide.** L'API démarre en une commande sur une base neuve, sans étape manuelle. Le contrôle « base vide » rend le seed idempotent, et la transaction évite de laisser une base à moitié remplie.
 - **Dossiers séparés `backend/` et `frontend/`.** Les deux applications n'ont rien à partager et leurs cycles sont indépendants. Des workspaces n'apporteraient que de la complexité.
 - **Node 24 LTS et npm.** C'est la LTS la plus récente, et npm est fourni avec Node, donc aucun outil supplémentaire n'est à installer.
-- **PrimeVue.** La bibliothèque est complète et adaptée aux dashboards (`DataTable`, `Card`, `DataView`), ce qui permet d'avoir une interface propre sans CSS sur mesure, comme le demande le README.
+- **PrimeVue.** La bibliothèque est complète et adaptée aux dashboards (`Card`, `Rating`, `Skeleton`, `Message`…), ce qui permet d'avoir une interface propre sans CSS sur mesure, comme le demande le README.
 - **Preset aux couleurs ADEO plutôt que le thème par défaut.** Le système de thème de PrimeVue est piloté par des design tokens : `definePreset` remplace la palette primaire d'Aura par celle du design system ADEO (Mozaic), sans écrire de CSS. L'interface est aux couleurs de l'enseigne tout en restant le thème standard pour tout le reste.
+- **Cartes partout plutôt qu'un `DataTable` pour le catalogue.** Une seule carte produit pour les classements et le catalogue : même lecture d'un produit partout, et un seul composant à tester. Le `DataTable` apportait tri et colonnes, inutiles ici (« No filtering or pagination required »).
 - **TanStack Vue Query.** Il gère le cache et les états loading/error de chaque section sans code répétitif. Il est conçu pour la Composition API (fonctions `useQuery`), ce qui respecte la règle « Composition API exclusively ».

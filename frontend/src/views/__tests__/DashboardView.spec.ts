@@ -13,7 +13,7 @@ describe('DashboardView', () => {
       'kpi-bar-stub',
       'most-appreciated-section-stub',
       'lowest-rated-section-stub',
-      'product-table-stub',
+      'catalogue-section-stub',
     ])
   })
 })

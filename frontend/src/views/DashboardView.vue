@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import CatalogueSection from '@/components/CatalogueSection.vue'
 import KpiBar from '@/components/KpiBar.vue'
 import LowestRatedSection from '@/components/LowestRatedSection.vue'
 import MostAppreciatedSection from '@/components/MostAppreciatedSection.vue'
-import ProductTable from '@/components/ProductTable.vue'
 </script>
 
 <template>
@@ -10,6 +10,6 @@ import ProductTable from '@/components/ProductTable.vue'
     <KpiBar />
     <MostAppreciatedSection />
     <LowestRatedSection />
-    <ProductTable />
+    <CatalogueSection />
   </div>
 </template>
