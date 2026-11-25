@@ -3,8 +3,16 @@ import type { PrismaService } from '../prisma/prisma.service.js';
 import {
   ProductsService,
   type ProductSummaryRow,
+  toMostAppreciatedProductDto,
   toProductSummaryDto,
 } from './products.service.js';
+
+/** Requête SQL (texte paramétré + valeurs) passée au premier appel de `$queryRaw`. */
+const sqlOf = (queryRaw: ReturnType<typeof vi.fn>): Prisma.Sql =>
+  queryRaw.mock.calls[0][0] as Prisma.Sql;
+
+/** Texte SQL sur une ligne, pour des assertions insensibles à l'indentation. */
+const flat = (sql: Prisma.Sql) => sql.text.replace(/\s+/g, ' ');
 
 const row = (
   overrides: Partial<ProductSummaryRow> = {},
@@ -68,5 +76,58 @@ describe('ProductsService.findAll', () => {
       reviewsCount: 0,
       averageNotation: null,
     });
+  });
+});
+
+describe('ProductsService.findMostAppreciated', () => {
+  const setup = (rows: unknown[] = []) => {
+    const prisma = { $queryRaw: vi.fn().mockResolvedValue(rows) };
+    return {
+      prisma,
+      service: new ProductsService(prisma as unknown as PrismaService),
+    };
+  };
+
+  it('ne compte comme positifs que les avis de note strictement supérieure à 3', async () => {
+    const { prisma, service } = setup();
+
+    await service.findMostAppreciated(5);
+
+    const sql = flat(sqlOf(prisma.$queryRaw));
+    expect(sql).toContain('FILTER (WHERE r.notation > 3)');
+    expect(sql).not.toContain('>= 3');
+  });
+
+  it('trie par avis positifs décroissants puis par référence, et applique la limite', async () => {
+    const { prisma, service } = setup();
+
+    await service.findMostAppreciated(7);
+
+    const sql = sqlOf(prisma.$queryRaw);
+    expect(flat(sql)).toContain(
+      'ORDER BY "positiveReviewsCount" DESC, p.reference LIMIT $1',
+    );
+    expect(sql.values).toEqual([7]);
+  });
+
+  it('mappe positiveReviewsCount en plus du résumé', async () => {
+    const { service } = setup([{ ...row(), positiveReviewsCount: 2 }]);
+
+    const [product] = await service.findMostAppreciated(5);
+
+    expect(product).toMatchObject(toProductSummaryDto(row()));
+    expect(product.positiveReviewsCount).toBe(2);
+  });
+});
+
+describe('toMostAppreciatedProductDto', () => {
+  it("n'expose aucun identifiant technique", () => {
+    const dto = toMostAppreciatedProductDto({
+      ...row(),
+      positiveReviewsCount: 1,
+      id: 42,
+    } as Parameters<typeof toMostAppreciatedProductDto>[0]);
+
+    expect(dto).not.toHaveProperty('id');
   });
 });

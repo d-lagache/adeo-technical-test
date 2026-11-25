@@ -168,7 +168,7 @@ flowchart LR
 ```
 
 - **Controller** : routage, lecture des paramètres, annotations Swagger. Aucune logique métier.
-- **Service** : logique métier et requêtes Prisma. Les agrégats (nombre d'avis, moyenne, classements) sont **calculés en SQL**, avec `groupBy`/`_count`/`_avg` de Prisma ou `$queryRaw` si besoin. Le résumé produit utilise un `$queryRaw` (`LEFT JOIN reviews` + `GROUP BY`) : une seule requête, les produits sans avis restent présents (0 avis, moyenne `null`), et le tri par agrégat avec `LIMIT` des classements s'y exprime directement. La conversion `Decimal` → number et l'arrondi de la moyenne à 2 décimales se font dans le mapping vers le DTO.
+- **Service** : logique métier et requêtes Prisma. Les agrégats (nombre d'avis, moyenne, classements) sont **calculés en SQL**, avec `groupBy`/`_count`/`_avg` de Prisma ou `$queryRaw` si besoin. Le résumé produit utilise un `$queryRaw` (`LEFT JOIN reviews` + `GROUP BY`) : une seule requête, les produits sans avis restent présents (0 avis, moyenne `null`), et le tri par agrégat avec `LIMIT` des classements s'y exprime directement. Les colonnes du résumé sont un fragment `Prisma.sql` partagé par toutes ces requêtes ; le nombre d'avis positifs des « plus appréciés » est un agrégat filtré (`COUNT(r.id) FILTER (WHERE r.notation > 3)`). La conversion `Decimal` → number et l'arrondi de la moyenne à 2 décimales se font dans le mapping vers le DTO.
 - **DTO de sortie** : forme exacte de la réponse. Les entités Prisma ne sont jamais renvoyées telles quelles, ce qui permet de cacher les id techniques et de choisir les champs exposés.
 
 ### 5.3 Configuration transverse (`main.ts`)

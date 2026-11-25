@@ -19,4 +19,4 @@ Valider le paramètre `limit` des classements.
 
 ## Fait quand
 
-- [ ] Utilisé en T17/T18 : `limit=0`, `limit=51`, `limit=abc` → 400.
+- [x] Utilisé en T17/T18 : `limit=0`, `limit=51`, `limit=abc` → 400.

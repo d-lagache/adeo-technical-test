@@ -24,5 +24,5 @@ Les N produits ayant le plus d'avis positifs (`notation > 3`).
 
 ## Fait quand
 
-- [ ] `curl '.../products/most-appreciated?limit=5' | jq length` → 5, triés par `positiveReviewsCount` décroissant.
-- [ ] `limit=0` → 400.
+- [x] `curl '.../products/most-appreciated?limit=5' | jq length` → 5, triés par `positiveReviewsCount` décroissant.
+- [x] `limit=0` → 400.
