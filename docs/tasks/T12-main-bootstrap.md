@@ -21,5 +21,5 @@ Mettre en place préfixe, validation et CORS pour toutes les routes.
 
 ## Fait quand
 
-- [ ] `curl localhost:3000/api/v1/inconnu` → 404 au format Nest.
-- [ ] Requête depuis `http://localhost:5173` acceptée (en-tête `Access-Control-Allow-Origin`).
+- [x] `curl localhost:3000/api/v1/inconnu` → 404 au format Nest.
+- [x] Requête depuis `http://localhost:5173` acceptée (en-tête `Access-Control-Allow-Origin`).
