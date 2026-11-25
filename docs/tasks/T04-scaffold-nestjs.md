@@ -17,11 +17,14 @@ Créer le squelette de l'API dans `backend/`.
 
 ## Étapes
 
-1. `npx @nestjs/cli new backend --package-manager npm --strict --skip-git`.
+1. `npx @nestjs/cli@12.0 new backend --package-manager npm --strict --skip-git`.
 2. Supprimer `app.controller.ts`, `app.service.ts` et leurs specs ; nettoyer `AppModule`.
-3. Supprimer le dossier `test/` e2e (tests unitaires uniquement).
+3. Supprimer le dossier `test/` e2e et sa config Vitest (tests unitaires uniquement).
+4. Retirer `@nestjs/observe` et `@nestjs/mau` ajoutés par le CLI ; aligner les dépendances sur les dernières versions stables.
+
+> Le CLI NestJS 12 génère un projet ESM avec Vitest et oxlint (et non Jest/ESLint) : choix conservé, voir architecture.md §2.
 
 ## Fait quand
 
-- [ ] `npm run start:dev` démarre sans erreur.
-- [ ] `npm run lint` et `npm run build` passent.
+- [x] `npm run start:dev` démarre sans erreur.
+- [x] `npm run lint` et `npm run build` passent.

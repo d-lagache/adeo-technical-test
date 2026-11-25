@@ -46,20 +46,28 @@ flowchart LR
 | Runtime         | Node.js                                         | 24 LTS (`.nvmrc`) | Exécution de l'API et outillage du front                    |
 | Gestion paquets | npm                                             | fournie avec Node | Installation des dépendances, scripts                       |
 | Base de données | PostgreSQL                                      | `postgres:18-alpine` | Stockage relationnel                                    |
-| Conteneurs      | Docker Compose                                  | —                | Lancement local et versionné de PostgreSQL                  |
-| Backend         | NestJS (TypeScript)                             | —                | API REST                                                    |
-| ORM             | Prisma                                          | —                | Schéma, migrations, client typé                             |
-| Documentation API | `@nestjs/swagger` (OpenAPI + Swagger UI)      | —                | Documentation générée et interactive                        |
-| Validation      | `class-validator` + `class-transformer`         | —                | Validation des paramètres d'entrée (`ValidationPipe`)       |
-| Configuration   | `@nestjs/config`                                | —                | Lecture et validation des variables d'environnement         |
-| Frontend        | Vue 3 (Composition API, `<script setup>`)       | —                | Dashboard                                                   |
-| Build front     | Vite                                            | —                | Serveur de dev et build                                     |
-| UI              | PrimeVue (thème par défaut)                     | —                | Bibliothèque de composants                                  |
-| Données front   | TanStack Vue Query                              | —                | Appels API, cache, états loading/error                      |
-| Tests           | Jest (API), Vitest (front)                      | —                | Tests unitaires                                             |
-| Qualité         | ESLint + Prettier                               | —                | Lint et formatage                                           |
+| Conteneurs      | Docker Compose                                  | v2 (spec Compose) | Lancement local et versionné de PostgreSQL                 |
+| Langage         | TypeScript                                      | 6.0              | Typage du backend et du frontend                            |
+| Backend         | NestJS (`@nestjs/core`, `@nestjs/common`, `@nestjs/platform-express`) / `@nestjs/cli` | 12.6 / 12.0 | API REST                    |
+| ORM             | Prisma (`prisma`, `@prisma/client`, `@prisma/adapter-pg`) | 7.10   | Schéma, migrations, client typé                             |
+| Documentation API | `@nestjs/swagger` (OpenAPI + Swagger UI)      | 12.1             | Documentation générée et interactive                        |
+| Validation      | `class-validator` + `class-transformer`         | 0.15 / 0.5       | Validation des paramètres d'entrée (`ValidationPipe`)       |
+| Configuration   | `@nestjs/config`                                | 12.1             | Lecture et validation des variables d'environnement         |
+| Frontend        | Vue 3 (Composition API, `<script setup>`)       | 3.5              | Dashboard                                                   |
+| Build front     | Vite + `@vitejs/plugin-vue` + `vue-tsc`         | 8.3 / 6.0 / 3.3  | Serveur de dev, build et vérification de types              |
+| UI              | PrimeVue + `@primeuix/themes` (thème par défaut) | 5.0 / 3.1       | Bibliothèque de composants                                  |
+| Données front   | TanStack Vue Query (`@tanstack/vue-query`)      | 5.108            | Appels API, cache, états loading/error                      |
+| Tests API       | Vitest (`vitest`, `@vitest/coverage-v8`)        | 5.1              | Tests unitaires                                             |
+| Tests front     | Vitest + `@vue/test-utils`                      | 5.1 / 2.6        | Tests unitaires                                             |
+| Qualité API     | oxlint (`--type-aware`) / Prettier              | 1.95 / 3.10      | Lint et formatage du backend                                |
+| Qualité front   | ESLint + `typescript-eslint` / Prettier         | 10.15 / 8.74 / 3.10 | Lint et formatage du frontend                            |
 
-Les versions marquées « — » seront fixées par le `package-lock.json` à l'initialisation des projets.
+Versions stables relevées sur le registre npm à l'initialisation (novembre 2026), au format majeur.mineur. Les `package.json` déclarent des plages `^` sur ces versions ; les versions exactes sont figées par le `package-lock.json` de chaque application, versionné.
+
+- **Prisma 7.10 et non 8** : le tag `latest` de `prisma` pointe sur une *release candidate* (`8.0.0-rc`) ; on reste sur la dernière version stable, alignée avec `@prisma/client`.
+- **TypeScript 6.0 et non 7** : `@nestjs/cli` 12 embarque TypeScript `~6.0` et `typescript-eslint` (front) exige `< 6.1`.
+- **Backend en ESM, testé avec Vitest et linté avec oxlint** : ce sont les choix par défaut du CLI NestJS 12, dont les paquets sont désormais *ESM-only*. Jest ne gère l'ESM qu'en mode expérimental (`--experimental-vm-modules`) ; Vitest le gère nativement et c'est aussi le runner du front, donc un seul outil de test pour tout le dépôt. Conséquences : `"type": "module"`, imports relatifs suffixés par `.js`, `import.meta.dirname` au lieu de `__dirname`, mocks en `vi.fn()`.
+- **Scaffold nettoyé** : le CLI ajoute `@nestjs/observe` (télémétrie vers un service SaaS externe) et `@nestjs/mau` (déploiement) ; ils sont retirés, hors périmètre d'un test local.
 
 ---
 
@@ -79,6 +87,7 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
 ├── backend/
 │   ├── package.json
 │   ├── .env.example
+│   ├── prisma.config.ts        # Configuration Prisma 7 (schéma, migrations, DATABASE_URL)
 │   ├── prisma/
 │   │   ├── schema.prisma       # Modèle Prisma
 │   │   └── migrations/         # Migrations SQL versionnées
@@ -131,6 +140,7 @@ La base est considérée comme **déjà démarrée** quand on lance l'API (`dock
 
 - Le schéma est décrit dans `backend/prisma/schema.prisma` et correspond à [`database-schema.md`](./database-schema.md).
 - Les migrations sont générées par `prisma migrate dev` puis versionnées dans `prisma/migrations/`.
+- Prisma 7 : la configuration CLI (chemin du schéma, des migrations, `DATABASE_URL`) est dans `backend/prisma.config.ts`, et le client se connecte via le *driver adapter* `@prisma/adapter-pg` passé au constructeur de `PrismaClient` dans `PrismaService`.
 - L'ENUM `author_type` est géré nativement par Prisma (`enum AuthorType`).
 - Prisma ne sait pas déclarer les contraintes `CHECK` (`price >= 0`, `stock >= 0`, `notation BETWEEN 1 AND 5`). On les ajoute **à la main, en SQL**, dans la migration initiale.
 
@@ -293,9 +303,9 @@ npm run dev              # http://localhost:5173
 
 ## 10. Qualité
 
-- **Lint et formatage** : ESLint et Prettier, dans chacune des deux applications.
+- **Lint et formatage** : Prettier dans les deux applications ; oxlint (avec règles typées) côté API, ESLint côté front.
 - **Tests API** :
-  - unitaires (Jest), sur les services, et en particulier sur les calculs d'agrégats ;
+  - unitaires (Vitest), sur les services, et en particulier sur les calculs d'agrégats ;
 - **Tests front** : Vitest, sur les composables et les composants clés.
 
 ---

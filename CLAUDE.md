@@ -28,7 +28,8 @@ docker compose up -d                 # PostgreSQL 18 (postgres:18-alpine) sur lo
 cp .env.example .env                 # DATABASE_URL, PORT, CORS_ORIGIN
 npm run start:dev                    # doit appliquer les migrations (prisma migrate deploy, via prestart:dev) puis seeder si vide
 npx prisma migrate dev --name <nom>  # nouvelle migration
-npm test                             # Jest (unitaires uniquement) ; un seul test : npx jest path/to/file.spec.ts -t "<nom>"
+npm test                             # Vitest (unitaires uniquement) ; un seul test : npx vitest run path/to/file.spec.ts -t "<nom>"
+npm run lint                         # oxlint --type-aware
 
 # frontend/
 cp .env.example .env                 # VITE_API_URL
@@ -48,7 +49,7 @@ Front (Vue 3) → HTTP JSON → API NestJS → Prisma → PostgreSQL (Docker). S
 - Auteurs dédoublonnés sur `UNIQUE (first_name, last_name, type)` faute d'identifiant source.
 - Volumétrie attendue après seed : 250 produits, 766 avis, 766 auteurs — utile pour vérifier le seed.
 
-**Backend NestJS** — modules `Config`, `Prisma`, `Seed`, `Products` (inclut la sous-ressource reviews), `Stats` :
+**Backend NestJS** (ESM : imports relatifs en `.js`, mocks `vi.fn()`) — modules `Config`, `Prisma`, `Seed`, `Products` (inclut la sous-ressource reviews), `Stats` :
 - Controller = routage + Swagger uniquement ; Service = logique et requêtes ; DTO de sortie obligatoires (jamais d'entité Prisma renvoyée brute).
 - Identifiant public = `reference`. Les `id` techniques (produits, auteurs) ne sont jamais exposés. JSON en camelCase.
 - Routes `most-appreciated` et `lowest-rated` déclarées **avant** `:reference` dans le controller.
