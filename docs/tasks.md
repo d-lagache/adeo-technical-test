@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 4 / 34**
+**Avancement : 5 / 34**
 
 ## Phase 0 — Socle du dépôt
 
@@ -19,7 +19,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | Statut | Tâche | Dépend de |
 |--------|-------|-----------|
 | ✅ | [T04 — Scaffolder l'application NestJS](./tasks/T04-scaffold-nestjs.md) | T02 |
-| ⬜ | [T05 — Configuration et validation de l'environnement](./tasks/T05-config-module.md) | T04 |
+| ✅ | [T05 — Configuration et validation de l'environnement](./tasks/T05-config-module.md) | T04 |
 | ⬜ | [T06 — Schéma Prisma](./tasks/T06-prisma-schema.md) | T05 |
 | ⬜ | [T07 — Migration initiale et contraintes CHECK](./tasks/T07-migration-initiale.md) | T03, T06 |
 | ⬜ | [T08 — PrismaModule et PrismaService](./tasks/T08-prisma-service.md) | T07 |

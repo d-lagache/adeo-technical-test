@@ -9,5 +9,7 @@ export default defineConfig({
     root: './',
     include: ['src/**/*.spec.ts'],
     passWithNoTests: true,
+    // Les décorateurs Nest / class-validator lisent les métadonnées via Reflect.
+    setupFiles: ['reflect-metadata'],
   },
 });

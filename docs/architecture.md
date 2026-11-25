@@ -152,7 +152,7 @@ La base est considérée comme **déjà démarrée** quand on lance l'API (`dock
 
 | Module           | Responsabilité                                                                 |
 |------------------|--------------------------------------------------------------------------------|
-| `ConfigModule`   | Charge `.env` et valide les variables (`DATABASE_URL`, `PORT`…) au démarrage   |
+| `ConfigModule`   | Charge `.env` et valide les variables (`DATABASE_URL`, `PORT`…) au démarrage : schéma `class-validator` dans `config/env.validation.ts`, l'API refuse de démarrer si la configuration est invalide |
 | `PrismaModule`   | Fournit un `PrismaService` unique (connexion et déconnexion propres)           |
 | `SeedModule`     | Remplit la base au démarrage si elle est vide (voir §7)                        |
 | `ProductsModule` | Produits : liste, détail, classements, et sous-ressource `reviews`             |
