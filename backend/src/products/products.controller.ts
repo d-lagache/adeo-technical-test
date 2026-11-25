@@ -8,6 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { LimitQueryDto } from './dto/limit-query.dto.js';
+import { ReviewDto } from './dto/review.dto.js';
 import { ProductDetailDto } from './dto/product-detail.dto.js';
 import { MostAppreciatedProductDto } from './dto/most-appreciated-product.dto.js';
 import { ProductSummaryDto } from './dto/product-summary.dto.js';
@@ -73,5 +74,22 @@ export class ProductsController {
   @ApiNotFoundResponse({ description: 'Référence inconnue' })
   findOne(@Param('reference') reference: string): Promise<ProductDetailDto> {
     return this.productsService.findOne(reference);
+  }
+
+  @Get(':reference/reviews')
+  @ApiOperation({
+    summary: "Avis d'un produit, auteur inclus",
+    description:
+      'Triés du plus récent au plus ancien. Tableau vide si le produit n’a aucun avis.',
+  })
+  @ApiParam({
+    name: 'reference',
+    description: 'Référence du produit',
+    example: '59033201',
+  })
+  @ApiOkResponse({ type: [ReviewDto] })
+  @ApiNotFoundResponse({ description: 'Référence inconnue' })
+  findReviews(@Param('reference') reference: string): Promise<ReviewDto[]> {
+    return this.productsService.findReviews(reference);
   }
 }

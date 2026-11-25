@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { ReviewDto } from './dto/review.dto.js';
 import { ProductDetailDto } from './dto/product-detail.dto.js';
 import { MostAppreciatedProductDto } from './dto/most-appreciated-product.dto.js';
 import { ProductSummaryDto } from './dto/product-summary.dto.js';
@@ -52,6 +53,31 @@ export function toProductDetailDto(row: ProductDetailRow): ProductDetailDto {
   return Object.assign(toProductSummaryDto(row), {
     description: row.description,
   });
+}
+
+/** Champs d'avis lus par Prisma : aucun `id`, ni d'avis ni d'auteur. */
+const REVIEW_SELECT = {
+  notation: true,
+  comment: true,
+  reviewedAt: true,
+  author: { select: { firstName: true, lastName: true, type: true } },
+} satisfies Prisma.ReviewSelect;
+
+export type ReviewRow = Prisma.ReviewGetPayload<{
+  select: typeof REVIEW_SELECT;
+}>;
+
+export function toReviewDto(review: ReviewRow): ReviewDto {
+  return {
+    notation: review.notation,
+    comment: review.comment,
+    date: review.reviewedAt.toISOString(),
+    author: {
+      firstName: review.author.firstName,
+      lastName: review.author.lastName,
+      type: review.author.type,
+    },
+  };
 }
 
 /** Colonnes du résumé produit, agrégats compris (requiert l'alias `p` et `r`, et un `GROUP BY p.id`). */
@@ -129,5 +155,22 @@ export class ProductsService {
       throw new NotFoundException(`Produit ${reference} introuvable`);
     }
     return toProductDetailDto(row);
+  }
+
+  /**
+   * Avis d'un produit, auteur inclus, du plus récent au plus ancien.
+   * 404 si la référence est inconnue ; `[]` si le produit existe sans avis.
+   */
+  async findReviews(reference: string): Promise<ReviewDto[]> {
+    const product = await this.prisma.product.findUnique({
+      where: { reference },
+      select: {
+        reviews: { select: REVIEW_SELECT, orderBy: { reviewedAt: 'desc' } },
+      },
+    });
+    if (!product) {
+      throw new NotFoundException(`Produit ${reference} introuvable`);
+    }
+    return product.reviews.map(toReviewDto);
   }
 }

@@ -215,3 +215,66 @@ describe('ProductsService.findOne', () => {
     );
   });
 });
+
+describe('ProductsService.findReviews', () => {
+  const review = {
+    notation: 4,
+    comment: 'Très bien',
+    reviewedAt: new Date('2023-05-14T10:32:00.000Z'),
+    author: { firstName: 'Ada', lastName: 'Lovelace', type: 'professional' },
+  };
+  const setup = (product: unknown) => {
+    const prisma = {
+      product: { findUnique: vi.fn().mockResolvedValue(product) },
+    };
+    return {
+      prisma,
+      service: new ProductsService(prisma as unknown as PrismaService),
+    };
+  };
+
+  it('renvoie les avis avec leur auteur, sans identifiant, du plus récent au plus ancien', async () => {
+    const { prisma, service } = setup({
+      reviews: [{ ...review, id: 1, author: { ...review.author, id: 9 } }],
+    });
+
+    const reviews = await service.findReviews('REF-001');
+
+    expect(reviews).toEqual([
+      {
+        notation: 4,
+        comment: 'Très bien',
+        date: '2023-05-14T10:32:00.000Z',
+        author: {
+          firstName: 'Ada',
+          lastName: 'Lovelace',
+          type: 'professional',
+        },
+      },
+    ]);
+    expect(prisma.product.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { reference: 'REF-001' },
+        select: {
+          reviews: expect.objectContaining({
+            orderBy: { reviewedAt: 'desc' },
+          }) as unknown,
+        },
+      }),
+    );
+  });
+
+  it('renvoie un tableau vide si le produit existe sans avis', async () => {
+    const { service } = setup({ reviews: [] });
+
+    await expect(service.findReviews('REF-001')).resolves.toEqual([]);
+  });
+
+  it('lève une 404 si le produit est inconnu', async () => {
+    const { service } = setup(null);
+
+    await expect(service.findReviews('inconnu')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
+  });
+});

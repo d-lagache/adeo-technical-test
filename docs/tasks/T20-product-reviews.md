@@ -25,5 +25,5 @@ Avis d'un produit, auteur inclus, en sous-ressource.
 
 ## Fait quand
 
-- [ ] `curl .../products/59033201/reviews` → avis avec auteur, aucun `id`.
-- [ ] Référence inconnue → 404.
+- [x] `curl .../products/59033201/reviews` → avis avec auteur, aucun `id`.
+- [x] Référence inconnue → 404.

@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 19 / 34**
+**Avancement : 20 / 34**
 
 ## Phase 0 — Socle du dépôt
 
@@ -39,7 +39,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T17 — Endpoint GET /products/most-appreciated](./tasks/T17-most-appreciated.md) | T15, T16 |
 | ✅ | [T18 — Endpoint GET /products/lowest-rated](./tasks/T18-lowest-rated.md) | T15, T16 |
 | ✅ | [T19 — Endpoint GET /products/:reference](./tasks/T19-product-detail.md) | T15 |
-| ⬜ | [T20 — Endpoint GET /products/:reference/reviews](./tasks/T20-product-reviews.md) | T19 |
+| ✅ | [T20 — Endpoint GET /products/:reference/reviews](./tasks/T20-product-reviews.md) | T19 |
 | ⬜ | [T21 — Passe de finition Swagger](./tasks/T21-swagger-polish.md) | T14, T17, T18, T20 |
 | ⬜ | [T22 — README du backend](./tasks/T22-backend-readme.md) | T21 |
 
