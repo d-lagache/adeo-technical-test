@@ -232,6 +232,7 @@ sequenceDiagram
 
 - **Idempotent** : on n'insère rien si la table `products` contient déjà des lignes.
 - **Atomique** : tout se fait dans une transaction Prisma (`$transaction`). Une erreur annule tout et la base reste vide.
+- **Mise en œuvre** : la transformation JSON → lignes est une fonction pure (`seed/seed.mapper.ts`, testée sans base). Dans la transaction interactive, `createManyAndReturn` insère auteurs et produits en renvoyant leurs id, ce qui permet de relier les avis (`createMany`) sans requête de relecture. Trois requêtes d'insertion au total.
 - **Volumétrie attendue** : 250 produits, 766 avis, 766 auteurs.
 
 ---

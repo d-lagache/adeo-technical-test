@@ -25,5 +25,5 @@ Remplir la base automatiquement, de façon idempotente et atomique.
 
 ## Fait quand
 
-- [ ] Base neuve : `select count(*)` → 250 / 766 / 766.
-- [ ] Second démarrage : aucune insertion, log « déjà rempli ».
+- [x] Base neuve : `select count(*)` → 250 / 766 / 766.
+- [x] Second démarrage : aucune insertion, log « déjà rempli ».
