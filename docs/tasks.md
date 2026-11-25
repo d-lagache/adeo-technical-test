@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 8 / 34**
+**Avancement : 9 / 34**
 
 ## Phase 0 — Socle du dépôt
 
@@ -23,7 +23,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T06 — Schéma Prisma](./tasks/T06-prisma-schema.md) | T05 |
 | ✅ | [T07 — Migration initiale et contraintes CHECK](./tasks/T07-migration-initiale.md) | T03, T06 |
 | ✅ | [T08 — PrismaModule et PrismaService](./tasks/T08-prisma-service.md) | T07 |
-| ⬜ | [T09 — Migrations automatiques au démarrage](./tasks/T09-prestart-migrations.md) | T08 |
+| ✅ | [T09 — Migrations automatiques au démarrage](./tasks/T09-prestart-migrations.md) | T08 |
 | ⬜ | [T10 — Seed : transformation du JSON (fonction pure)](./tasks/T10-seed-mapping.md) | T06 |
 | ⬜ | [T11 — Seed : insertion au démarrage](./tasks/T11-seed-service.md) | T09, T10 |
 

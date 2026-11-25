@@ -298,7 +298,7 @@ npm run dev              # http://localhost:5173
 | `backend/.env.example`  | `DATABASE_URL`, `PORT`, `CORS_ORIGIN`        |
 | `frontend/.env.example` | `VITE_API_URL`                              |
 
-> **À confirmer pendant l'implémentation :** pour que l'API démarre vraiment en une seule commande, `npm run start:dev` doit d'abord appliquer les migrations (`prisma migrate deploy`), par exemple via un script `prestart:dev`.
+**Migrations automatiques.** Les scripts `prestart`, `prestart:dev` et `prestart:debug` appellent `npm run db:deploy` (`prisma migrate deploy && prisma generate`) : `npm run start:dev` applique donc les migrations en attente avant de lancer l'API, puis le seed remplit la base si elle est vide. Le client Prisma est aussi généré au `postinstall`. Pour que ce `postinstall` passe sans `.env` (clone neuf, CI), `prisma.config.ts` lit `process.env.DATABASE_URL` au lieu de `env('DATABASE_URL')` : `prisma generate` n'a pas besoin de la base, seules les commandes `migrate` exigent la variable.
 
 ---
 

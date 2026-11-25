@@ -19,4 +19,4 @@ Démarrer l'API en une seule commande sur une base neuve.
 
 ## Fait quand
 
-- [ ] Après `docker compose down -v && docker compose up -d`, `npm run start:dev` crée les tables sans autre commande.
+- [x] Après `docker compose down -v && docker compose up -d`, `npm run start:dev` crée les tables sans autre commande.
