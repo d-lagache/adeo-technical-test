@@ -53,7 +53,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T26 — Client HTTP et types](./tasks/T26-api-client.md) | T23 |
 | ✅ | [T27 — Bandeau KPI](./tasks/T27-kpi-bar.md) | T14, T24, T25, T26 |
 | ✅ | [T28 — Section « Produits les plus appréciés »](./tasks/T28-most-appreciated-section.md) | T17, T24, T25, T26 |
-| ⬜ | [T29 — Section « Produits les moins bien notés »](./tasks/T29-lowest-rated-section.md) | T18, T28 |
+| ✅ | [T29 — Section « Produits les moins bien notés »](./tasks/T29-lowest-rated-section.md) | T18, T28 |
 | ⬜ | [T30 — Catalogue complet](./tasks/T30-catalogue-table.md) | T15, T24, T25, T26 |
 | ⬜ | [T31 — Assemblage du dashboard](./tasks/T31-dashboard-view.md) | T27, T28, T29, T30 |
 

@@ -11,12 +11,13 @@ Afficher les 5 produits avec la moyenne la plus basse (< 3).
 ## Fichiers concernés
 
 - `frontend/src/composables/useLowestRated.ts`
+- `frontend/src/components/LowestRatedSection.vue`
 
 ## Étapes
 
 1. `useLowestRated()` appelle `/products/lowest-rated?limit=5`.
-2. Réutiliser `ProductCards`, en mettant en avant `averageNotation` (ex. composant `Rating` en lecture seule).
+2. Réutiliser `ProductCards`, en mettant en avant `averageNotation` (composant `Rating` en lecture seule, moyenne arrondie à l'entier, valeur exacte affichée à côté).
 
 ## Fait quand
 
-- [ ] Jusqu'à 5 cartes avec moyenne < 3, ordre croissant.
+- [x] Jusqu'à 5 cartes avec moyenne < 3, ordre croissant.
