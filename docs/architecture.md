@@ -176,6 +176,7 @@ flowchart LR
 - Préfixe global : `api/v1`.
 - `ValidationPipe` global (`whitelist`, `transform`). Il valide et convertit les query params, par exemple `limit` en entier compris entre 1 et 50.
 - Swagger UI disponible sur `/api/docs`, et JSON OpenAPI sur `/api/docs-json`.
+  Le plugin CLI `@nestjs/swagger` (déclaré dans `nest-cli.json`, option `introspectComments`) déduit les schémas des types TypeScript des DTO et reprend leurs commentaires JSDoc comme descriptions : peu de décorateurs `@ApiProperty` à écrire.
 - CORS activé pour l'origine du front.
 
 ---

@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 12 / 34**
+**Avancement : 13 / 34**
 
 ## Phase 0 — Socle du dépôt
 
@@ -32,7 +32,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | Statut | Tâche | Dépend de |
 |--------|-------|-----------|
 | ✅ | [T12 — Configuration transverse de l'API](./tasks/T12-main-bootstrap.md) | T05 |
-| ⬜ | [T13 — Swagger UI et OpenAPI](./tasks/T13-swagger-setup.md) | T12 |
+| ✅ | [T13 — Swagger UI et OpenAPI](./tasks/T13-swagger-setup.md) | T12 |
 | ⬜ | [T14 — Endpoint GET /stats](./tasks/T14-stats-endpoint.md) | T11, T13 |
 | ⬜ | [T15 — Endpoint GET /products](./tasks/T15-products-list.md) | T11, T13 |
 | ⬜ | [T16 — DTO de query `limit`](./tasks/T16-limit-query-dto.md) | T12 |

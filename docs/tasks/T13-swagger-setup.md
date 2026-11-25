@@ -22,5 +22,5 @@ Exposer une documentation générée à partir du code.
 
 ## Fait quand
 
-- [ ] `http://localhost:3000/api/docs` affiche Swagger UI.
-- [ ] `curl localhost:3000/api/docs-json` renvoie un document OpenAPI valide.
+- [x] `http://localhost:3000/api/docs` affiche Swagger UI.
+- [x] `curl localhost:3000/api/docs-json` renvoie un document OpenAPI valide.
