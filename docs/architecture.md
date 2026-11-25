@@ -61,7 +61,7 @@ flowchart LR
 | Tests API       | Vitest (`vitest`, `@vitest/coverage-v8`)        | 5.1              | Tests unitaires                                             |
 | Tests front     | Vitest + `@vue/test-utils`                      | 5.1 / 2.6        | Tests unitaires                                             |
 | Qualité API     | oxlint (`--type-aware`) / Prettier              | 1.95 / 3.10      | Lint et formatage du backend                                |
-| Qualité front   | oxlint + ESLint (`typescript-eslint`, `eslint-plugin-vue`) / Prettier | 1.82 / 10.15 / 8.74 / 3.10 | Lint et formatage du frontend      |
+| Qualité front   | oxlint + ESLint (`typescript-eslint`, `eslint-plugin-vue`) / Prettier | 1.82 / 10.15 / 8.74 / 10.11 / 3.10 | Lint et formatage du frontend      |
 
 Versions stables relevées sur le registre npm à l'initialisation (novembre 2026), au format majeur.mineur. Les `package.json` déclarent des plages `^` sur ces versions ; les versions exactes sont figées par le `package-lock.json` de chaque application, versionné.
 
@@ -94,12 +94,15 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
 │   ├── package.json
 │   ├── .env.example
 │   ├── prisma.config.ts        # Configuration Prisma 7 (schéma, migrations, DATABASE_URL)
+│   ├── nest-cli.json           # Plugin @nestjs/swagger (schémas déduits des DTO)
+│   ├── vitest.config.ts        # Tests unitaires (*.spec.ts à côté du code)
 │   ├── prisma/
 │   │   ├── schema.prisma       # Modèle Prisma
 │   │   └── migrations/         # Migrations SQL versionnées
 │   ├── src/
 │   │   ├── main.ts             # Bootstrap, préfixe /api/v1, Swagger, ValidationPipe
 │   │   ├── app.module.ts
+│   │   ├── generated/prisma/   # Client Prisma généré (postinstall / db:deploy), ignoré par git
 │   │   ├── common/             # Éléments transverses (DTO d'erreur documenté dans Swagger)
 │   │   ├── config/             # Schéma et validation de l'environnement
 │   │   ├── prisma/             # PrismaModule / PrismaService
@@ -112,13 +115,14 @@ Le dépôt contient deux applications **indépendantes**, chacune avec son propr
     ├── .env.example
     └── src/
         ├── main.ts             # Création de l'app, PrimeVue (preset ADEO), VueQueryPlugin, router
+        ├── App.vue             # Titre (lien vers le dashboard) et <RouterView />
         ├── router/             # Routes : / (dashboard) et /products/:reference (détail)
         ├── theme/              # adeoPreset : preset Aura aux couleurs ADEO
         ├── api/                # Client HTTP et types des réponses
         ├── composables/        # useStats, useProducts, useMostAppreciated, useProduct…
         ├── components/         # KpiBar, ProductCard(s), ProductRating, CatalogueSection…
         ├── test-utils/         # Routeur mémoire pour les tests de composants
-        ├── utils/              # Fonctions pures partagées (formatPrice, formatDate)
+        ├── utils/              # Formatage fr-FR (formatPrice, formatDate, formatCount, formatNotation)
         └── views/              # DashboardView, ProductDetailView
 ```
 
@@ -180,7 +184,7 @@ flowchart LR
 ```
 
 - **Controller** : routage, lecture des paramètres, annotations Swagger. Aucune logique métier.
-- **Service** : logique métier et requêtes Prisma. Les agrégats (nombre d'avis, moyenne, classements) sont **calculés en SQL**, avec `groupBy`/`_count`/`_avg` de Prisma ou `$queryRaw` si besoin. Le résumé produit utilise un `$queryRaw` (`LEFT JOIN reviews` + `GROUP BY`) : une seule requête, les produits sans avis restent présents (0 avis, moyenne `null`), et le tri par agrégat avec `LIMIT` des classements s'y exprime directement. Les colonnes du résumé sont un fragment `Prisma.sql` partagé par toutes ces requêtes ; le nombre d'avis positifs des « plus appréciés » est un agrégat filtré (`COUNT(r.id) FILTER (WHERE r.notation > 3)`). Les avis d'un produit sont lus en une requête Prisma (`product.findUnique` avec un `select` imbriqué sur `reviews` et `author`, trié par date décroissante) : le `select` plutôt qu'un `include` ne charge que les champs exposés, sans aucun `id`, et un produit absent (`null`, donc 404) se distingue d'un produit sans avis (`[]`). La conversion `Decimal` → number et l'arrondi de la moyenne à 2 décimales se font dans le mapping vers le DTO.
+- **Service** : logique métier et requêtes Prisma. Les agrégats (nombre d'avis, moyenne, classements) sont **calculés en SQL**, jamais en JavaScript : `count()` de Prisma pour les KPI de `/stats`, `$queryRaw` pour tout ce qui porte le résumé produit. Le résumé produit utilise un `$queryRaw` (`LEFT JOIN reviews` + `GROUP BY`) : une seule requête, les produits sans avis restent présents (0 avis, moyenne `null`), et le tri par agrégat avec `LIMIT` des classements s'y exprime directement. Les colonnes du résumé sont un fragment `Prisma.sql` partagé par toutes ces requêtes ; le nombre d'avis positifs des « plus appréciés » est un agrégat filtré (`COUNT(r.id) FILTER (WHERE r.notation > 3)`), et un `HAVING` exclut les produits sans avis positif, comme `lowest-rated` exclut les produits sans avis. Les avis d'un produit sont lus en une requête Prisma (`product.findUnique` avec un `select` imbriqué sur `reviews` et `author`, trié par date décroissante) : le `select` plutôt qu'un `include` ne charge que les champs exposés, sans aucun `id`, et un produit absent (`null`, donc 404) se distingue d'un produit sans avis (`[]`). La conversion `Decimal` → number, l'arrondi de la moyenne à 2 décimales et la date d'avis sans fuseau se font dans le mapping vers le DTO.
 - **DTO de sortie** : forme exacte de la réponse. Les entités Prisma ne sont jamais renvoyées telles quelles, ce qui permet de cacher les id techniques et de choisir les champs exposés.
 
 ### 5.3 Configuration transverse (`main.ts`)
@@ -200,11 +204,11 @@ Toutes les routes sont publiques, en lecture seule (`GET`), et préfixées par `
 
 | Méthode | Route                                   | Description                                              | Réponse                                                                                       |
 |---------|-----------------------------------------|----------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `GET`   | `/products`                             | Catalogue complet, sous forme résumée                    | `ProductSummary[]` : `reference`, `name`, `price`, `currency`, `stock`, `reviewsCount`, `averageNotation` |
-| `GET`   | `/products/most-appreciated?limit=5`    | Produits ayant le plus d'avis positifs (`notation > 3`)  | `ProductSummary[]` + `positiveReviewsCount`                                                   |
-| `GET`   | `/products/lowest-rated?limit=5`        | Produits les moins bien notés (moyenne `< 3`)            | `ProductSummary[]`, triés par `averageNotation` croissante                                    |
+| `GET`   | `/products`                             | Catalogue complet, sous forme résumée, trié par `reference` | `ProductSummary[]` : `reference`, `name`, `price`, `currency`, `stock`, `reviewsCount`, `averageNotation` |
+| `GET`   | `/products/most-appreciated?limit=5`    | Produits ayant le plus d'avis positifs (`notation > 3`), produits sans avis positif exclus | `ProductSummary[]` + `positiveReviewsCount`, triés par `positiveReviewsCount` décroissant puis `reference` |
+| `GET`   | `/products/lowest-rated?limit=5`        | Produits les moins bien notés (moyenne `< 3`), produits sans avis exclus | `ProductSummary[]`, triés par `averageNotation` croissante puis `reference`        |
 | `GET`   | `/products/:reference`                  | Détail d'un produit, sans ses avis                       | `ProductDetail` : résumé + `description`                                                      |
-| `GET`   | `/products/:reference/reviews`          | Avis d'un produit, auteur inclus                         | `Review[]` : `notation`, `comment`, `date`, `author { firstName, lastName, type }`             |
+| `GET`   | `/products/:reference/reviews`          | Avis d'un produit, auteur inclus, du plus récent au plus ancien | `Review[]` : `notation`, `comment`, `date` (sans fuseau), `author { firstName, lastName, type }` ; `[]` si aucun avis |
 | `GET`   | `/stats`                                | Indicateurs globaux                                      | `{ totalProducts, totalReviews }`                                                             |
 
 ### Conventions
@@ -214,7 +218,8 @@ Toutes les routes sont publiques, en lecture seule (`GET`), et préfixées par `
 - **Pas de pagination** : le volume est faible (250 produits) et le README précise « No filtering or pagination required ». L'over-fetching est évité autrement : un résumé en liste, le détail à part, les avis en sous-ressource.
 - **Ordre des routes** : `most-appreciated` et `lowest-rated` sont déclarées **avant** `:reference` dans le controller, sinon NestJS les interpréterait comme une référence.
 - **Codes HTTP** : `200` en cas de succès, `400` pour un paramètre invalide, `404` pour une référence inconnue.
-- **Format d'erreur** : celui de NestJS par défaut, `{ statusCode, message, error }`.
+- **Format d'erreur** : celui de NestJS par défaut, `{ statusCode, message, error }`. Le message de la 404 est en français ; ceux des 400 sont les messages par défaut de `class-validator`, en anglais.
+- **Dates** : `date` d'un avis au format ISO 8601 **sans fuseau** (`2025-04-06T02:09:10`), comme la source : la valeur n'a pas de fuseau, l'API n'en invente pas.
 
 ---
 
@@ -265,8 +270,8 @@ sequenceDiagram
 | Section                    | Composant                   | Endpoint                               | Composable            |
 |----------------------------|-----------------------------|----------------------------------------|-----------------------|
 | Bandeau KPI                | `KpiBar` : 2 `Card` (icône, chiffre `fr-FR`, libellé) | `GET /stats` | `useStats()`          |
-| 5 produits les plus appréciés | `ProductCards`           | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
-| 5 produits les moins bien notés | `ProductCards`         | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
+| 5 produits les plus appréciés | `MostAppreciatedSection` → `ProductCards` | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
+| 5 produits les moins bien notés | `LowestRatedSection` → `ProductCards` | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
 | Catalogue complet          | `CatalogueSection` → `ProductCards`, 250 cartes sans pagination | `GET /products` | `useProducts()` |
 
 Les trois listes partagent la même carte : `ProductCard` (nom, « Réf. », prix, `ProductRating`), lien vers la page de détail. `ProductRating` affiche un `Rating` en lecture seule (étoiles entières) suivi de la note exacte (« 4,2 / 5 (12 avis) »), ou « Pas encore d'avis ». `ProductCards` les dispose en grille CSS `auto-fill` et gère les états chargement / erreur / vide ; l'ordre est celui de l'API. Le nombre d'avis positifs renvoyé par `most-appreciated` sert au classement côté serveur mais n'est plus affiché, pour garder une carte identique partout.
@@ -290,7 +295,7 @@ export function useStats() {
 
 ### 8.4 Écran Détail produit
 
-Route `/products/:reference` (`ProductDetailView`, chargée en lazy, `reference` reçue en prop). On y arrive en cliquant sur n'importe quelle carte produit ; le titre de l'application ramène au dashboard.
+Route `/products/:reference` (`ProductDetailView`, chargée en lazy, `reference` reçue en prop). On y arrive en cliquant sur n'importe quelle carte produit ; le lien « Retour au dashboard », comme le titre de l'application, ramène au dashboard.
 
 | Bloc              | Contenu                                                            | Endpoint                          | Composable                     |
 |-------------------|--------------------------------------------------------------------|-----------------------------------|--------------------------------|
@@ -298,7 +303,7 @@ Route `/products/:reference` (`ProductDetailView`, chargée en lazy, `reference`
 | Avis clients      | Note, auteur, type (Professionnel / Amateur), date `fr-FR`, commentaire | `GET /products/:reference/reviews` | `useProductReviews(reference)` |
 
 - Deux requêtes indépendantes, chacune avec son skeleton et son message d'erreur.
-- Une **404** affiche « Produit introuvable » ; elle n'est pas rejouée par Vue Query (`retryUnlessNotFound`), contrairement aux autres erreurs (3 essais par défaut).
+- Une **404** affiche « Produit introuvable » ; elle n'est pas rejouée par Vue Query (`retryUnlessNotFound`), contrairement aux autres erreurs (3 nouvelles tentatives, valeur par défaut de Vue Query).
 - Liste d'avis vide : « Aucun avis ».
 
 ---
@@ -339,7 +344,7 @@ Le détail (variables, scripts, dépannage) est dans [`backend/README.md`](../ba
 
 - **Lint et formatage** : Prettier dans les deux applications (`npm run format`) ; oxlint (avec règles typées) côté API ; oxlint puis ESLint côté front (`npm run lint`), plus la vérification de types des `.vue` par `vue-tsc` (`npm run type-check`).
 - **Tests API** : unitaires (Vitest, `npm test`), sur les services (en particulier les calculs d'agrégats et le mapping vers les DTO), le seed (transformation du JSON et insertion), la validation de l'environnement et le DTO `limit`. Pas de tests e2e.
-- **Tests front** : unitaires (Vitest + `@vue/test-utils` en jsdom, `npm test`), sur les composants, les vues, le client HTTP, le preset de thème et `formatDate`.
+- **Tests front** : unitaires (Vitest + `@vue/test-utils` en jsdom, `npm test`), sur les composants, les vues, le client HTTP, la politique de retry, le preset de thème et les fonctions de formatage.
 
 ---
 

@@ -7,7 +7,7 @@ Dashboard Vue 3 en lecture seule qui affiche les indicateurs, les classements et
 
 ## Prérequis
 
-- **Node 24** : `nvm use` à la racine du dépôt (fichier `.nvmrc`). Le template Vite exige `>=24.12.0` : `nvm install 24` si la version locale est plus ancienne.
+- **Node 24** : `nvm use` à la racine du dépôt (fichier `.nvmrc`). Le template `create-vue` déclare `engines.node` `^22.18.0 || >=24.12.0` : `nvm install 24` si la version 24 locale est plus ancienne.
 - **npm**, fourni avec Node.
 - **L'API démarrée** sur `http://localhost:3000` : suivre le [README du backend](../backend/README.md) (`docker compose up -d`, puis `npm run start:dev` dans `backend/`). Sans API, le dashboard s'affiche mais chaque section montre un message d'erreur.
 
@@ -65,14 +65,14 @@ Les trois listes utilisent la même carte, `ProductCard` : nom, référence, pri
 
 ### Détail produit — `/products/:reference`
 
-Page chargée à la demande (le dashboard n'embarque pas son code). Le titre « Dashboard catalogue » ramène au dashboard.
+Page chargée à la demande (le dashboard n'embarque pas son code). Le lien « Retour au dashboard » en haut de page, comme le titre « Dashboard catalogue », ramène au dashboard.
 
 | Bloc         | Contenu                                                              | Endpoint                             | Composable                     |
 |--------------|----------------------------------------------------------------------|--------------------------------------|--------------------------------|
 | Produit      | Nom, référence, prix, stock, note, description                       | `GET /products/:reference`           | `useProduct(reference)`        |
 | Avis clients | Note, auteur, type (Professionnel / Amateur), date, commentaire      | `GET /products/:reference/reviews`   | `useProductReviews(reference)` |
 
-- Une référence inconnue (404) affiche « Produit introuvable » ; elle n'est pas rejouée (`retryUnlessNotFound`), contrairement aux autres erreurs (3 essais).
+- Une référence inconnue (404) affiche « Produit introuvable » ; elle n'est pas rejouée (`retryUnlessNotFound`), contrairement aux autres erreurs (3 nouvelles tentatives, comportement par défaut de Vue Query).
 - Un produit sans avis affiche « Aucun avis ».
 
 ### États de chargement
@@ -91,7 +91,7 @@ src/
 ├── composables/    # Un composable Vue Query par section, politique de retry
 ├── components/     # KpiBar, sections, ProductCards, ProductCard, ProductRating
 ├── views/          # DashboardView, ProductDetailView
-├── utils/          # Fonctions pures : formatPrice, formatDate (fr-FR)
+├── utils/          # Fonctions pures de formatage fr-FR : formatPrice, formatDate, formatCount, formatNotation
 └── test-utils/     # Routeur mémoire pour les tests de composants
 ```
 
@@ -110,4 +110,4 @@ Règles du projet :
 |-------------------------------------------------------|------------------------------------------------------------------------|
 | Toutes les sections affichent « Impossible de charger… » | API non démarrée, ou `VITE_API_URL` absent / incorrect dans `frontend/.env` |
 | Erreur CORS dans la console du navigateur             | L'origine du front ne correspond pas à `CORS_ORIGIN` du backend        |
-| Catalogue vide alors que l'API répond                 | Base non seedée : voir « Réinitialiser la base » dans le [README du backend](../backend/README.md) |
+| Catalogue vide alors que l'API répond                 | Base vidée pendant que l'API tournait (le seed ne s'exécute qu'au démarrage) : redémarrer l'API, ou voir « Réinitialiser la base » dans le [README du backend](../backend/README.md) |
