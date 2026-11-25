@@ -67,11 +67,20 @@ export type ReviewRow = Prisma.ReviewGetPayload<{
   select: typeof REVIEW_SELECT;
 }>;
 
+/**
+ * `reviewed_at` est un `TIMESTAMP` sans fuseau, lu par Prisma comme une heure UTC :
+ * on renvoie la valeur telle quelle (`2025-04-06T02:09:10`, comme la source), sans
+ * suffixe `Z`. Un client l'interprète ainsi en heure locale, sans décalage de jour.
+ */
+export function toLocalDateTime(date: Date): string {
+  return date.toISOString().slice(0, 19);
+}
+
 export function toReviewDto(review: ReviewRow): ReviewDto {
   return {
     notation: review.notation,
     comment: review.comment,
-    date: review.reviewedAt.toISOString(),
+    date: toLocalDateTime(review.reviewedAt),
     author: {
       firstName: review.author.firstName,
       lastName: review.author.lastName,
@@ -110,7 +119,8 @@ export class ProductsService {
 
   /**
    * Les `limit` produits ayant le plus d'avis positifs (`notation > 3`, strict),
-   * comptés en SQL avec un agrégat filtré ; départage par référence.
+   * comptés en SQL avec un agrégat filtré ; départage par référence. Les produits
+   * sans avis positif sont exclus (symétrique de `lowest-rated`).
    */
   async findMostAppreciated(
     limit: number,
@@ -121,6 +131,7 @@ export class ProductsService {
         FROM products p
         LEFT JOIN reviews r ON r.product_id = p.id
        GROUP BY p.id
+      HAVING COUNT(r.id) FILTER (WHERE r.notation > 3) > 0
        ORDER BY "positiveReviewsCount" DESC, p.reference
        LIMIT ${limit}`);
     return rows.map(toMostAppreciatedProductDto);

@@ -46,7 +46,7 @@ export interface Review {
   /** Note de 1 à 5. */
   notation: number
   comment: string
-  /** Date ISO 8601. */
+  /** Date et heure ISO 8601 sans fuseau (`2025-04-06T02:09:10`), à lire en heure locale. */
   date: string
   author: Author
 }

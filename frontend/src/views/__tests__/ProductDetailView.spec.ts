@@ -56,13 +56,13 @@ const reviews: Review[] = [
   {
     notation: 5,
     comment: 'Très pratique.',
-    date: '2025-04-06T12:00:00.000Z',
+    date: '2025-04-06T12:00:00',
     author: { firstName: 'Poha', lastName: 'Kuxero', type: 'professional' },
   },
   {
     notation: 4,
     comment: 'Bon rapport qualité-prix.',
-    date: '2025-03-01T12:00:00.000Z',
+    date: '2025-03-01T12:00:00',
     author: { firstName: 'Lina', lastName: 'Moreau', type: 'amateur' },
   },
 ]

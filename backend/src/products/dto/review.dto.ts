@@ -16,8 +16,12 @@ export class ReviewDto {
    */
   comment: string;
 
-  /** Date de l'avis (ISO 8601). */
-  @ApiProperty({ format: 'date-time', example: '2025-04-06T02:09:10.000Z' })
+  /**
+   * Date et heure de l'avis, ISO 8601 sans fuseau (heure locale, comme la source) :
+   * à interpréter telle quelle, sans conversion de fuseau.
+   * @example "2025-04-06T02:09:10"
+   */
+  @ApiProperty({ pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$' })
   date: string;
 
   /** Auteur de l'avis. */

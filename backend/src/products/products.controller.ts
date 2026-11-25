@@ -37,7 +37,7 @@ export class ProductsController {
   @ApiOperation({
     summary: "Produits ayant le plus d'avis positifs",
     description:
-      'Avis positif = note strictement supérieure à 3 (`notation > 3`). Tri par nombre d’avis positifs décroissant, puis par référence. `limit` : 5 par défaut, entre 1 et 50.',
+      'Avis positif = note strictement supérieure à 3 (`notation > 3`). Les produits sans avis positif sont exclus. Tri par nombre d’avis positifs décroissant, puis par référence. `limit` : 5 par défaut, entre 1 et 50.',
   })
   @ApiOkResponse({ type: [MostAppreciatedProductDto] })
   @ApiBadRequestResponse({

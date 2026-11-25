@@ -99,6 +99,16 @@ describe('ProductsService.findMostAppreciated', () => {
     expect(sql).not.toContain('>= 3');
   });
 
+  it('exclut les produits sans avis positif', async () => {
+    const { prisma, service } = setup();
+
+    await service.findMostAppreciated(5);
+
+    expect(flat(sqlOf(prisma.$queryRaw))).toContain(
+      'HAVING COUNT(r.id) FILTER (WHERE r.notation > 3) > 0',
+    );
+  });
+
   it('trie par avis positifs décroissants puis par référence, et applique la limite', async () => {
     const { prisma, service } = setup();
 
@@ -244,7 +254,7 @@ describe('ProductsService.findReviews', () => {
       {
         notation: 4,
         comment: 'Très bien',
-        date: '2023-05-14T10:32:00.000Z',
+        date: '2023-05-14T10:32:00',
         author: {
           firstName: 'Ada',
           lastName: 'Lovelace',
@@ -262,6 +272,19 @@ describe('ProductsService.findReviews', () => {
         },
       }),
     );
+  });
+
+  it('renvoie la date sans fuseau, identique à la source', async () => {
+    const { service } = setup({
+      reviews: [
+        { ...review, reviewedAt: new Date('2025-04-06T23:30:00.000Z') },
+      ],
+    });
+
+    const [result] = await service.findReviews('REF-001');
+
+    // Pas de `Z` : un client en Europe/Paris ne doit pas basculer au 7 avril.
+    expect(result.date).toBe('2025-04-06T23:30:00');
   });
 
   it('renvoie un tableau vide si le produit existe sans avis', async () => {
