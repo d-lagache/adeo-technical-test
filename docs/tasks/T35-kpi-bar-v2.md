@@ -22,4 +22,4 @@ Rendre le bandeau KPI lisible d'un coup d'œil. Il garde les 2 indicateurs exist
 
 ## Fait quand
 
-- [ ] Le bandeau affiche 250 produits et 766 avis, lisibles avec leur libellé.
+- [x] Le bandeau affiche 250 produits et 766 avis, lisibles avec leur libellé.

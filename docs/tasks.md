@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 32 / 39**
+**Avancement : 33 / 39**
 
 ## Phase 0 — Socle du dépôt
 
@@ -63,7 +63,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | Statut | Tâche | Dépend de |
 |--------|-------|-----------|
 | ✅ | [T34 — Thème aux couleurs ADEO](./tasks/T34-adeo-theme.md) | T24 |
-| ⬜ | [T35 — Bandeau KPI lisible](./tasks/T35-kpi-bar-v2.md) | T27, T34 |
+| ✅ | [T35 — Bandeau KPI lisible](./tasks/T35-kpi-bar-v2.md) | T27, T34 |
 | ⬜ | [T36 — Carte produit unifiée](./tasks/T36-product-card.md) | T28, T29, T34 |
 | ⬜ | [T37 — Catalogue en cartes](./tasks/T37-catalogue-cards.md) | T30, T36 |
 | ⬜ | [T38 — Routing](./tasks/T38-vue-router.md) | T31 |

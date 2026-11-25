@@ -19,13 +19,26 @@ function mockStats(state: { data?: unknown; isPending?: boolean; isError?: boole
 const mountKpiBar = () => mount(KpiBar, { global: { plugins: [PrimeVue] } })
 
 describe('KpiBar', () => {
-  it('affiche le nombre total de produits et d’avis', () => {
+  it('affiche le nombre total de produits et d’avis avec leur libellé', () => {
     mockStats({ data: { totalProducts: 250, totalReviews: 766 } })
 
     const wrapper = mountKpiBar()
 
     expect(wrapper.get('[data-testid="totalProducts"]').text()).toBe('250')
     expect(wrapper.get('[data-testid="totalReviews"]').text()).toBe('766')
+    expect(wrapper.text()).toContain('Produits au catalogue')
+    expect(wrapper.text()).toContain('Avis clients')
+  })
+
+  it('formate les grands nombres à la française', () => {
+    mockStats({ data: { totalProducts: 1234, totalReviews: 1234567 } })
+
+    const wrapper = mountKpiBar()
+
+    // Intl insère une espace insécable étroite comme séparateur de milliers.
+    const normalize = (text: string) => text.replace(/\s/g, ' ')
+    expect(normalize(wrapper.get('[data-testid="totalProducts"]').text())).toBe('1 234')
+    expect(normalize(wrapper.get('[data-testid="totalReviews"]').text())).toBe('1 234 567')
   })
 
   it('affiche des skeletons pendant le chargement', () => {

@@ -257,7 +257,7 @@ sequenceDiagram
 
 | Section                    | Composant PrimeVue envisagé | Endpoint                               | Composable            |
 |----------------------------|-----------------------------|----------------------------------------|-----------------------|
-| Bandeau KPI                | `Card`                      | `GET /stats`                           | `useStats()`          |
+| Bandeau KPI                | `KpiBar` : 2 `Card` (icône, chiffre `fr-FR`, libellé) | `GET /stats` | `useStats()`          |
 | 5 produits les plus appréciés | `Card` / `DataView`      | `GET /products/most-appreciated?limit=5` | `useMostAppreciated()` |
 | 5 produits les moins bien notés | `Card` / `DataView`    | `GET /products/lowest-rated?limit=5`   | `useLowestRated()`    |
 | Catalogue complet          | `DataTable`, sans pagination | `GET /products`                       | `useProducts()`       |
