@@ -48,7 +48,7 @@ Front (Vue 3) → HTTP JSON → API NestJS → Prisma → PostgreSQL (Docker). S
 
 **Base de données** (3 tables : `products`, `authors`, `reviews`) :
 - Les `CHECK` (`price >= 0`, `stock >= 0`, `notation BETWEEN 1 AND 5`) ne sont pas exprimables dans Prisma : les ajouter en SQL brut dans la migration initiale.
-- Aucun agrégat stocké (moyenne, nombre d'avis) : toujours calculer en SQL à la requête (`groupBy`/`_count`/`_avg` ou `$queryRaw`), jamais en JS après chargement.
+- Aucun agrégat stocké (moyenne, nombre d'avis) : toujours calculer en SQL à la requête (`count()` Prisma pour `/stats`, `$queryRaw` pour le résumé produit et les classements), jamais en JS après chargement.
 - Auteurs dédoublonnés sur `UNIQUE (first_name, last_name, type)` faute d'identifiant source.
 - Volumétrie attendue après seed : 250 produits, 766 avis, 766 auteurs — utile pour vérifier le seed.
 
@@ -56,7 +56,8 @@ Front (Vue 3) → HTTP JSON → API NestJS → Prisma → PostgreSQL (Docker). S
 - Controller = routage + Swagger uniquement ; Service = logique et requêtes ; DTO de sortie obligatoires (jamais d'entité Prisma renvoyée brute).
 - Identifiant public = `reference`. Les `id` techniques (produits, auteurs) ne sont jamais exposés. JSON en camelCase.
 - Routes `most-appreciated` et `lowest-rated` déclarées **avant** `:reference` dans le controller.
-- « Avis positif » = `notation > 3` (strict) ; `lowest-rated` = moyenne `< 3`, tri croissant.
+- « Avis positif » = `notation > 3` (strict) ; `most-appreciated` exclut les produits sans avis positif ; `lowest-rated` = moyenne `< 3`, tri croissant, produits sans avis exclus. Départage par `reference`.
+- Date d'avis renvoyée sans fuseau (`2025-04-06T02:09:10`, comme la source et la colonne `TIMESTAMP`), jamais avec `Z`.
 - Pas de pagination (choix assumé) ; l'over-fetching est évité par résumé en liste / détail séparé / avis en sous-ressource.
 - `ValidationPipe` global (`whitelist`, `transform`) ; `limit` entier entre 1 et 50.
 - Seed dans `onApplicationBootstrap` : idempotent (ne fait rien si `products` non vide) et atomique (`$transaction`).

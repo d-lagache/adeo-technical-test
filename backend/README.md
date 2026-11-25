@@ -62,7 +62,7 @@ Toutes les routes sont publiques, en `GET`, préfixées par `/api/v1`, et renvoi
 | Route                                  | Description                                                                 | Codes         |
 |----------------------------------------|-----------------------------------------------------------------------------|---------------|
 | `/products`                            | Catalogue complet en version résumée (sans description ni avis), trié par référence | 200           |
-| `/products/most-appreciated?limit=5`   | Produits ayant le plus d'avis positifs (note `> 3`), avec `positiveReviewsCount` | 200, 400      |
+| `/products/most-appreciated?limit=5`   | Produits ayant le plus d'avis positifs (note `> 3`), avec `positiveReviewsCount` (produits sans avis positif exclus) | 200, 400      |
 | `/products/lowest-rated?limit=5`       | Produits dont la note moyenne est `< 3`, par moyenne croissante (produits sans avis exclus) | 200, 400      |
 | `/products/:reference`                 | Détail d'un produit (résumé + `description`), sans ses avis                 | 200, 404      |
 | `/products/:reference/reviews`         | Avis du produit, du plus récent au plus ancien, auteur inclus (`[]` si aucun avis) | 200, 404      |
@@ -70,7 +70,8 @@ Toutes les routes sont publiques, en `GET`, préfixées par `/api/v1`, et renvoi
 
 - `limit` : entier entre 1 et 50, 5 par défaut. Hors bornes ou non entier → `400`.
 - Pas de pagination : le catalogue compte 250 produits (choix détaillé dans `docs/architecture.md` §6).
-- Erreurs au format NestJS par défaut : `{ "statusCode": 404, "message": "Produit 00000000 introuvable", "error": "Not Found" }`. Pour une erreur de validation, `message` est la liste des contraintes violées.
+- Erreurs au format NestJS par défaut : `{ "statusCode": 404, "message": "Produit 00000000 introuvable", "error": "Not Found" }`. Pour une erreur de validation, `message` est la liste des contraintes violées (messages par défaut de `class-validator`, en anglais).
+- `date` d'un avis : ISO 8601 **sans fuseau** (`2025-04-06T02:09:10`), comme la source ; à lire telle quelle, sans conversion de fuseau.
 
 ### Exemples
 
@@ -89,7 +90,7 @@ curl http://localhost:3000/api/v1/products/59033201
 #  "reviewsCount":3,"averageNotation":4.33,"description":"Labore est dolor …"}
 
 curl http://localhost:3000/api/v1/products/59033201/reviews
-# [{"notation":5,"comment":"Very practical and easy to use.","date":"2025-04-06T02:09:10.000Z",
+# [{"notation":5,"comment":"Very practical and easy to use.","date":"2025-04-06T02:09:10",
 #   "author":{"firstName":"Poha","lastName":"Kuxero","type":"professional"}}, …]
 
 curl -i http://localhost:3000/api/v1/products/00000000
@@ -133,7 +134,8 @@ src/
 ├── seed/           # Transformation du JSON (fonction pure) et insertion au démarrage
 ├── products/       # Produits, classements et sous-ressource reviews
 ├── stats/          # Indicateurs globaux
-└── common/         # DTO d'erreur documenté dans Swagger
+├── common/         # DTO d'erreur documenté dans Swagger
+└── generated/      # Client Prisma généré (postinstall / db:deploy), ignoré par git
 prisma/
 ├── schema.prisma   # Modèle Prisma
 └── migrations/     # Migrations SQL versionnées (dont les contraintes CHECK)

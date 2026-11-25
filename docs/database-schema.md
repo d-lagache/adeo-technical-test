@@ -110,8 +110,8 @@ Contrainte composite : `UNIQUE (first_name, last_name, type)`. Elle sert à déd
 - **`NUMERIC(10,2)` pour le prix.** On évite les erreurs d'arrondi des flottants (`REAL` / `DOUBLE PRECISION`) sur des montants.
 - **ENUM `author_type`.** La liste de valeurs est fermée et le modèle est stable : *« The data model is stable »* (README).
 - **`currency` en colonne, sans table dédiée.** Le jeu de données ne contient qu'une devise (`EUR`). Une table `currencies` ajouterait une jointure sans rien apporter. La colonne permet quand même de gérer d'autres devises plus tard.
-- **Pas d'agrégat stocké.** La note moyenne et le nombre d'avis ne sont pas enregistrés dans `products`. On les calcule à la requête (ou avec une vue), ce qui évite les incohérences.
-- **`TIMESTAMP` sans fuseau pour `reviewed_at`.** La source (`2025-04-06T02:09:10`) ne donne pas de fuseau. On garde la valeur telle quelle au lieu d'en inventer un. Au seed, la chaîne est lue en UTC (`new Date(date + 'Z')`) : lue en heure locale, elle serait décalée selon le fuseau de la machine qui lance l'API.
+- **Pas d'agrégat stocké.** La note moyenne et le nombre d'avis ne sont pas enregistrés dans `products`. On les calcule en SQL à chaque requête, ce qui évite les incohérences.
+- **`TIMESTAMP` sans fuseau pour `reviewed_at`.** La source (`2025-04-06T02:09:10`) ne donne pas de fuseau. On garde la valeur telle quelle au lieu d'en inventer un. Au seed, la chaîne est lue en UTC (`new Date(date + 'Z')`) : lue en heure locale, elle serait décalée selon le fuseau de la machine qui lance l'API. L'API la renvoie de même sans fuseau (`2025-04-06T02:09:10`) : avec un suffixe `Z`, un navigateur la convertirait dans son fuseau et pourrait afficher le jour précédent ou suivant.
 - **Suppression.** Supprimer un produit supprime ses avis (`CASCADE`). Un auteur qui a encore des avis ne peut pas être supprimé (`RESTRICT`).
 - **Limite connue.** Un auteur est identifié par (prénom, nom, type), car la source ne fournit pas d'identifiant. Deux homonymes de même type seraient donc fusionnés. Sur le dataset actuel, les 766 auteurs sont tous distincts.
 
@@ -135,6 +135,6 @@ Contrainte composite : `UNIQUE (first_name, last_name, type)`. Elle sert à déd
 | `reviews[].author.lastName`      | `authors.last_name`      |
 | `reviews[].author.type`          | `authors.type`           |
 
-**Volumétrie du dataset :** 250 produits, 766 avis, 766 auteurs distincts, 0 à 10 avis par produit.
+**Volumétrie du dataset :** 250 produits, 766 avis, 766 auteurs distincts, 0 à 6 avis par produit (33 produits sans avis).
 
 ---
