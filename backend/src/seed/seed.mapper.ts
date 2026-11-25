@@ -4,7 +4,7 @@ import type {
   SourceProduct,
 } from './source.types.js';
 
-export interface ProductRow {
+export interface ProductSeedRow {
   reference: string;
   name: string;
   description: string;
@@ -13,14 +13,14 @@ export interface ProductRow {
   stock: number;
 }
 
-export interface AuthorRow {
+export interface AuthorSeedRow {
   firstName: string;
   lastName: string;
   type: SourceAuthorType;
 }
 
 /** Avis à insérer : produit et auteur désignés par leurs clés naturelles, résolues en id à l'insertion. */
-export interface ReviewRow {
+export interface ReviewSeedRow {
   productReference: string;
   authorKey: string;
   notation: number;
@@ -29,9 +29,9 @@ export interface ReviewRow {
 }
 
 export interface SeedData {
-  products: ProductRow[];
-  authors: AuthorRow[];
-  reviews: ReviewRow[];
+  products: ProductSeedRow[];
+  authors: AuthorSeedRow[];
+  reviews: ReviewSeedRow[];
 }
 
 /**
@@ -39,7 +39,7 @@ export interface SeedData {
  * sur `(firstName, lastName, type)`, comme la contrainte `authors_identity_key`.
  * `JSON.stringify` évite toute collision liée à un séparateur.
  */
-export function authorKey(author: AuthorRow | SourceAuthor): string {
+export function authorKey(author: AuthorSeedRow | SourceAuthor): string {
   return JSON.stringify([author.firstName, author.lastName, author.type]);
 }
 
@@ -58,9 +58,9 @@ export function parseSourceDate(date: string): Date {
 
 /** Transforme le catalogue source en lignes prêtes à insérer (fonction pure). */
 export function mapSourceToSeedData(source: SourceProduct[]): SeedData {
-  const products: ProductRow[] = [];
-  const authors = new Map<string, AuthorRow>();
-  const reviews: ReviewRow[] = [];
+  const products: ProductSeedRow[] = [];
+  const authors = new Map<string, AuthorSeedRow>();
+  const reviews: ReviewSeedRow[] = [];
 
   for (const product of source) {
     products.push({

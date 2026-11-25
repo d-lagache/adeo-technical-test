@@ -14,7 +14,7 @@ import {
 export class EnvironmentVariables {
   @IsUrl({ protocols: ['postgres', 'postgresql'], require_tld: false })
   @IsNotEmpty()
-  DATABASE_URL!: string;
+  DATABASE_URL: string;
 
   @IsInt()
   @Min(1)

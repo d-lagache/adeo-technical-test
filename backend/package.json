@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "API REST du catalogue produits (NestJS, Prisma, PostgreSQL)",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -49,7 +49,6 @@
     "oxlint-tsgolint": "^7.0.2001",
     "prettier": "^3.10.1",
     "prisma": "^7.10.1",
-    "source-map-support": "^0.5.21",
     "typescript": "~6.0.3",
     "vite": "^8.3.8",
     "vitest": "^5.1.2"

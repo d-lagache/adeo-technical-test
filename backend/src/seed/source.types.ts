@@ -1,4 +1,8 @@
-/** Forme des données de `data/products.json` (voir docs/database-schema.md §7). */
+/**
+ * Forme des données de `data/products.json` (voir docs/database-schema.md §7).
+ * Ces types décrivent le fichier source, indépendamment de Prisma : `SourceAuthorType`
+ * reprend volontairement les valeurs de l'enum Prisma `AuthorType` sans en dépendre.
+ */
 
 export type SourceAuthorType = 'amateur' | 'professional';
 
