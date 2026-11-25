@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 21 / 34**
+**Avancement : 21 / 32**
 
 ## Phase 0 — Socle du dépôt
 
@@ -41,7 +41,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T19 — Endpoint GET /products/:reference](./tasks/T19-product-detail.md) | T15 |
 | ✅ | [T20 — Endpoint GET /products/:reference/reviews](./tasks/T20-product-reviews.md) | T19 |
 | ✅ | [T21 — Passe de finition Swagger](./tasks/T21-swagger-polish.md) | T14, T17, T18, T20 |
-| ⬜ | [T22 — README du backend](./tasks/T22-backend-readme.md) | T21 |
+| ✅ | [T22 — README du backend](./tasks/T22-backend-readme.md) | T21 |
 
 ## Phase 3 — Frontend (bonus)
 
@@ -62,5 +62,3 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | Statut | Tâche | Dépend de |
 |--------|-------|-----------|
 | ⬜ | [T32 — Mettre à jour la documentation de conception](./tasks/T32-docs-update.md) | T31 |
-| ⬜ | [T33 — Vérification de bout en bout](./tasks/T33-verification-e2e.md) | T32 |
-| ⬜ | [T34 — Publication du dépôt](./tasks/T34-push-remote.md) | T33 |

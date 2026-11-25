@@ -21,4 +21,4 @@ Documenter le démarrage et l'usage de l'API (le `README.md` racine ne doit pas 
 
 ## Fait quand
 
-- [ ] Un développeur qui suit uniquement ce README obtient une API fonctionnelle.
+- [x] Un développeur qui suit uniquement ce README obtient une API fonctionnelle.
