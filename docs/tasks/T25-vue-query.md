@@ -20,4 +20,4 @@ Gérer cache et états loading/error des appels API.
 
 ## Fait quand
 
-- [ ] L'application démarre sans erreur console.
+- [x] L'application démarre sans erreur console.
