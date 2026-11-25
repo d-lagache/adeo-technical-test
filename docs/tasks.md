@@ -4,7 +4,7 @@ Une tâche = un commit. Le détail de chaque tâche est dans [`tasks/`](./tasks/
 
 Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 
-**Avancement : 37 / 39**
+**Avancement : 38 / 39**
 
 ## Phase 0 — Socle du dépôt
 
@@ -56,7 +56,7 @@ Légende : ⬜ à faire · 🔄 en cours · ✅ terminé
 | ✅ | [T29 — Section « Produits les moins bien notés »](./tasks/T29-lowest-rated-section.md) | T18, T28 |
 | ✅ | [T30 — Catalogue complet](./tasks/T30-catalogue-table.md) | T15, T24, T25, T26 |
 | ✅ | [T31 — Assemblage du dashboard](./tasks/T31-dashboard-view.md) | T27, T28, T29, T30 |
-| ⬜ | [T32 — README du frontend](./tasks/T32-frontend-readme.md) | T39 |
+| ✅ | [T32 — README du frontend](./tasks/T32-frontend-readme.md) | T39 |
 
 ## Phase 3bis — Refonte UI
 

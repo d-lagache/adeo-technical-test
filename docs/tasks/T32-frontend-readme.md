@@ -22,4 +22,4 @@ Documenter le démarrage et l'usage du dashboard (le `README.md` racine ne doit 
 
 ## Fait quand
 
-- [ ] Un développeur qui suit uniquement ce README obtient un dashboard fonctionnel connecté à l'API.
+- [x] Un développeur qui suit uniquement ce README obtient un dashboard fonctionnel connecté à l'API.
