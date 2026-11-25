@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/env.validation.js';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, validate })],
+  imports: [ConfigModule.forRoot({ isGlobal: true, validate }), PrismaModule],
 })
 export class AppModule {}

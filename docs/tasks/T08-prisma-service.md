@@ -20,5 +20,5 @@ Fournir un client Prisma unique, injectable partout.
 
 ## Fait quand
 
-- [ ] L'API démarre et se connecte à la base (log Nest sans erreur).
-- [ ] Base arrêtée → l'API échoue au démarrage avec une erreur lisible.
+- [x] L'API démarre et se connecte à la base (log Nest sans erreur).
+- [x] Base arrêtée → l'API échoue au démarrage avec une erreur lisible.
