@@ -12,15 +12,15 @@ Afficher nombre total de produits et d'avis en haut de page.
 
 - `frontend/src/composables/useStats.ts`
 - `frontend/src/components/KpiBar.vue`
-- `frontend/src/components/KpiBar.spec.ts`
+- `frontend/src/components/__tests__/KpiBar.spec.ts` (dossier `__tests__` imposé par les `tsconfig` du scaffold)
 
 ## Étapes
 
 1. `useStats()` = `useQuery({ queryKey: ['stats'], queryFn })`.
 2. `KpiBar` : deux `Card`, `Skeleton` pendant le chargement, `Message` en cas d'erreur.
-3. Test : rendu des deux valeurs (composable mocké).
+3. Test : rendu des deux valeurs, skeletons et message d'erreur (composable mocké).
 
 ## Fait quand
 
-- [ ] Le bandeau affiche 250 et 766.
-- [ ] API coupée → message d'erreur, le reste de la page fonctionne.
+- [x] Le bandeau affiche 250 et 766.
+- [x] API coupée → message d'erreur, le reste de la page fonctionne.
