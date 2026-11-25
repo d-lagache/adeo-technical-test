@@ -25,5 +25,5 @@ Fournir les KPI du dashboard.
 
 ## Fait quand
 
-- [ ] `curl localhost:3000/api/v1/stats` → `{"totalProducts":250,"totalReviews":766}`.
-- [ ] `npm test` passe.
+- [x] `curl localhost:3000/api/v1/stats` → `{"totalProducts":250,"totalReviews":766}`.
+- [x] `npm test` passe.
