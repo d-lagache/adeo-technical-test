@@ -1,7 +1,7 @@
-# T32 — Mettre à jour la documentation de conception
+# T33 — Mettre à jour la documentation de conception
 
 **Phase :** 4 — Finalisation  
-**Dépend de :** [T31](./T31-dashboard-view.md)  
+**Dépend de :** [T32](./T32-frontend-readme.md)  
 **Références :** CLAUDE.md
 
 ## Objectif
